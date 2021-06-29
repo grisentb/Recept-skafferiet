@@ -16,7 +16,7 @@ main() async{
 class DatabaseComm {
   final db = Db("mongodb://localhost:27017/ReceptSkafferiet");
   final secretSalt = "VS/Sj3QMIHwUExeHXejcw717hrc49ckXlg+raLH2kA8=";
-
+  
   var recipeCollection;
   var userCollection;
   var relationalCollection;
@@ -52,7 +52,7 @@ class DatabaseComm {
   }
   
   //Push recipe
-  void newRecipe(localUser, ingredients, instructions, title, description, url, time, peopleRating) async {
+  void pushRecipeArguments(localUser, ingredients, instructions, title, description, url, time, peopleRating) async {
     //Check if the recipe already exists, if it does not, push to recipe collection
     var recipeId = getId(url);
     if (recipeId == null){
@@ -80,6 +80,16 @@ class DatabaseComm {
     );
   }
 
+  void pushRecipeClass(localUser, Recipe recipe) async {
+    await pushRecipeArguments(localUser,
+    recipe.getIngridients(), 
+    recipe.getInstructions(), 
+    recipe.getTitle(), 
+    recipe.getDescription(),
+    recipe.getUrl(),
+    recipe.getTime(),
+    recipe.getRating());
+  }
   //Checks login, returns user session token
   login(username, password) async {
     try {
