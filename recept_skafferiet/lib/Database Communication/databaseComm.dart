@@ -6,14 +6,15 @@ import "package:mongo_dart/mongo_dart.dart";
 import "package:recept_skafferiet_app/recipe.dart";
 import "package:uuid/uuid.dart";
 
-main() async{
-  print("Starting");
+main() async {
   var dbComm = new DatabaseComm();
   await dbComm.connectToCollections();
-  print('Connected');
+  var test = await dbComm.login('Bob', '123');
+  print(test);
 }
 
 class DatabaseComm {
+  //final db = Db("mongodb://80.216.223.122:27017/ReceptSkafferiet");
   final db = Db("mongodb://localhost:27017/ReceptSkafferiet");
   final secretSalt = "VS/Sj3QMIHwUExeHXejcw717hrc49ckXlg+raLH2kA8=";
   
@@ -28,15 +29,15 @@ class DatabaseComm {
     this.userCollection = await db.collection('Users');
     this.relationalCollection = await db.collection('Relatinoal');
     this.userSessions = await db.collection('userSessions');
-    print("Connected to the Collections succesfully");
+    return "Connected to the Collections successfully";
   }
   
-  //Gets all recipes connected to a specific user. Takes the specific users id as argument and returns a list of all recipes 
-  Future<List<Recipe>> getRecipeIds(localUser) async {
+  //Gets all recipes connected to a specific user. Takes the specific users id as argument and returns a list of all recipes
+  getRecipeIds(localUser) async {
     var relations = await this.recipeCollection.find({'user_id': localUser}).toList();
     List<Recipe> recipes = [];
     for (var relation in relations){
-      print(relation);
+      //print(relation);
       var recipe = await this.recipeCollection.findOne({
         '_id': relation['recept_id']
       });
@@ -102,15 +103,15 @@ class DatabaseComm {
     var hashedPwd = hashPassword(password, this.secretSalt);
     var userPwd = user['password'];
     if(hashedPwd == userPwd){
-      //print("Succesfull login");
+      //print("Successful login");
       //Create session key, and add into userSession database
       var token = Uuid().v4();
       var session = {'username': username, 'sessionToken': token};
       await this.userSessions.save(session);
       return token;
-    } else {throw ArgumentError('Password is not correct');}
+    } else {throw ArgumentError('Password is wrong');}
     } catch (e) {
-      //print('Failed login');
+      return null;
     }
   }
 
@@ -119,7 +120,7 @@ class DatabaseComm {
     await this.userSessions.deleteOne({'username': username, 'sessionToken': sessionToken});
   }
   //Register and pushes to 
-  void register(username, password) async{
+  register(username, password) async{
     if(this.userCollection != null){
       var query = await this.userCollection.findOne({'username': username});
       if (query == null){
@@ -130,19 +131,19 @@ class DatabaseComm {
             'password': hashPassword(password, this.secretSalt)
           }
         );
-        print("Succesfully added user: " + username);
+        return "Successfully added user: " + username;
       }else{
-        print("User exists already");
+        return "User exists already";
       }
     }else {
-      print("Not connected to user Collection");
+      return "Not connected to user Collection";
     }
   }
 
   //Check session
   checkSession(username, sessionToken) async {
     var userSession = await this.userSessions.findOne({'username':username, 'sessionToken': sessionToken});
-    if(userSessions != null){return true;}
+    if(userSession != null){return true;}
     return false;
   }
 //Helpers
