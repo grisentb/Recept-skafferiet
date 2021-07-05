@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:recept_skafferiet_app/main_navigation.dart';
+import 'package:recept_skafferiet_app/screens/home/home.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Nav());
 }
 
 class MyApp extends StatelessWidget {

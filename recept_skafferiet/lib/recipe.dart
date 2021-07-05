@@ -1,5 +1,4 @@
-
-class Recipe{
+class Recipe {
   var instructions;
   var ingridients;
   var title;
@@ -8,38 +7,44 @@ class Recipe{
   var url;
   var rating;
   var time;
-  
 
-  Recipe(ins, ing, tit, des){
+  Recipe(ins, ing, tit, des) {
     this.ingridients = ing;
     this.instructions = ins;
     this.title = tit;
     this.description = des;
   }
-  
+
   //getters and setters
-  getIngridients(){
+  getIngridients() {
     return this.ingridients;
   }
-  getInstructions(){
+
+  getInstructions() {
     return this.instructions;
   }
-  getTitle(){
+
+  getTitle() {
     return this.title;
   }
-  getDescription(){
+
+  getDescription() {
     return this.description;
   }
-  getId(){
+
+  getId() {
     return this.id;
   }
-  getUrl(){
+
+  getUrl() {
     return this.url;
   }
-  getRating(){
+
+  getRating() {
     return this.rating;
   }
-  getTime(){
+
+  getTime() {
     return this.time;
   }
 }
