@@ -26,7 +26,7 @@ class DatabaseComm {
     await db.open();
     this.recipeCollection = await db.collection('Recipes');
     this.userCollection = await db.collection('Users');
-    this.relationalCollection = await db.collection('Relatinoal');
+    this.relationalCollection = await db.collection('Relational');
     this.userSessions = await db.collection('userSessions');
     print("Connected to the Collections succesfully");
   }
@@ -41,49 +41,51 @@ class DatabaseComm {
       var recipe =
           await this.recipeCollection.findOne({'_id': relation['recept_id']});
 
-      recipes.add(new Recipe(recipe['ingredients'], recipe['instructions'],
-          recipe['title'], recipe['description']));
+      recipes.add(new Recipe(
+          recipe['ingredients'],
+          recipe['instructions'],
+          recipe['title'],
+          recipe['extra'],
+          recipe['url'],
+          recipe['portions'],
+          recipe['image']));
     }
     return recipes;
   }
 
   //Push recipe
-  void pushRecipeArguments(localUser, ingredients, instructions, title,
-      description, url, time, peopleRating) async {
-    //Check if the recipe already exists, if it does not, push to recipe collection
-    var recipeId = getId(url);
-    if (recipeId == null) {
-      this.recipeCollection.insert({
-        '_id': localUser,
-        'url': url,
-        'title': title,
-        'description': description,
-        'ingridients': ingredients,
-        'instructions': instructions,
-        'time': time,
-        'rating': peopleRating
-      });
-    }
-    //Push to relational collection
-    this.relationalCollection.insert({
-      'user_id': localUser,
-      'recept_id': recipeId,
-      'my_rating': "",
-      'my_comments': ""
+  void pushRecipeClass(localUser, Recipe recipe) async {
+    await this.recipeCollection.insert({
+      '_id': recipe.url,
+      'title': recipe.title,
+      'ingredients': recipe.ingredients,
+      'instructions': recipe.instructions,
+      'extra': recipe.extra,
+      'portions': recipe.portions,
+      'image': recipe.image
     });
   }
 
-  void pushRecipeClass(localUser, Recipe recipe) async {
-    await pushRecipeArguments(
-        localUser,
-        recipe.getIngridients(),
-        recipe.getInstructions(),
-        recipe.getTitle(),
-        recipe.getDescription(),
-        recipe.getUrl(),
-        recipe.getTime(),
-        recipe.getRating());
+  void pushRelation(localUser, url, rating, comment) async {
+    //Push to relational collection
+    await this.relationalCollection.insert({
+      'user_id': localUser,
+      'recept_id': url,
+      'my_rating': rating,
+      'my_comments': comment
+    });
   }
+
+  // void pushRecipeClass(localUser, Recipe recipe) async {
+  //   await pushRecipeArguments(
+  //       localUser,
+  //       recipe.getIngredients(),
+  //       recipe.getInstructions(),
+  //       recipe.getTitle(),
+  //       recipe.getUrl(),
+  //       recipe.getTime(),
+  //       recipe.getRating());
+  // }
 
   //Checks login, returns user session token
   login(username, password) async {
@@ -158,13 +160,21 @@ class DatabaseComm {
   }
 
   dynamic getId(url) async {
-    var recipe = await this.recipeCollection.findOne({'url': url});
-    return recipe['id'];
+    var recipe = await this.recipeCollection.findOne({'_id': url});
+    if (recipe == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void generateSalt() {
     var rand = Random();
     var bytes = List<int>.generate(32, (_) => rand.nextInt(256));
     print(base64.encode(bytes));
+  }
+
+  closeDB() {
+    db.close();
   }
 }

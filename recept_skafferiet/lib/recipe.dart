@@ -1,23 +1,26 @@
 class Recipe {
   var instructions;
-  var ingridients;
+  var ingredients;
   var title;
-  var description;
   var id;
   var url;
-  var rating;
-  var time;
+  var extra;
+  var portions;
+  var image;
 
-  Recipe(ins, ing, tit, des) {
-    this.ingridients = ing;
-    this.instructions = ins;
+  Recipe(tit, ing, ins, ext, url, por, img) {
     this.title = tit;
-    this.description = des;
+    this.ingredients = ing;
+    this.instructions = ins;
+    this.extra = ext;
+    this.url = url;
+    this.portions = por;
+    this.image = img;
   }
 
   //getters and setters
-  getIngridients() {
-    return this.ingridients;
+  getIngredients() {
+    return this.ingredients;
   }
 
   getInstructions() {
@@ -28,10 +31,6 @@ class Recipe {
     return this.title;
   }
 
-  getDescription() {
-    return this.description;
-  }
-
   getId() {
     return this.id;
   }
@@ -40,11 +39,15 @@ class Recipe {
     return this.url;
   }
 
-  getRating() {
-    return this.rating;
+  getExtra() {
+    return this.extra;
   }
 
-  getTime() {
-    return this.time;
+  getPortions() {
+    return this.portions;
+  }
+
+  getImage() {
+    return this.image;
   }
 }
