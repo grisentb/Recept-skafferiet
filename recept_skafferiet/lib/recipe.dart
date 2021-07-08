@@ -1,45 +1,46 @@
-
-class Recipe{
+class Recipe {
   var instructions;
-  var ingridients;
+  var ingredients;
   var title;
-  var description;
   var id;
   var url;
   var rating;
   var time;
-  
 
-  Recipe(ins, ing, tit, des){
-    this.ingridients = ing;
-    this.instructions = ins;
+  Recipe(tit, ing, ins, tim, url) {
     this.title = tit;
-    this.description = des;
+    this.ingredients = ing;
+    this.instructions = ins;
+    this.time = time;
+    this.url = url;
   }
-  
+
   //getters and setters
-  getIngridients(){
-    return this.ingridients;
+  getIngridients() {
+    return this.ingredients;
   }
-  getInstructions(){
+
+  getInstructions() {
     return this.instructions;
   }
-  getTitle(){
+
+  getTitle() {
     return this.title;
   }
-  getDescription(){
-    return this.description;
-  }
-  getId(){
+
+  getId() {
     return this.id;
   }
-  getUrl(){
+
+  getUrl() {
     return this.url;
   }
-  getRating(){
+
+  getRating() {
     return this.rating;
   }
-  getTime(){
+
+  getTime() {
     return this.time;
   }
 }

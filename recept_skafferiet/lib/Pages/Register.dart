@@ -20,9 +20,9 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void submitDetails() async{
-    var res = await dbComm.register(usernameController.text, passwordController.text);
+    dbComm.register(usernameController.text, passwordController.text);
     setState(() {
-      this.debugText = res;
+      this.debugText = "Registered!";
     });
   }
   @override
