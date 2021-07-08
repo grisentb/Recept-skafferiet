@@ -8,6 +8,7 @@ class Home extends StatelessWidget {
     final title = 'Alla recept';
     return MaterialApp(
       title: title,
+      // ignore: missing_return
       onGenerateRoute: (settings) {
         if (settings.name == RecipeScreen.route) {
           final args = settings.arguments as RecipeScreenArguments;
