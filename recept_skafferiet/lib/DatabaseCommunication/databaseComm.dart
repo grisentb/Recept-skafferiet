@@ -159,9 +159,20 @@ class DatabaseComm {
     return digest.toString();
   }
 
-  dynamic getId(url) async {
+  dynamic recipeInDB(url) async {
     var recipe = await this.recipeCollection.findOne({'_id': url});
     if (recipe == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  dynamic relationInDB(user, url) async {
+    var relation = await this
+        .relationalCollection
+        .findOne({'user_id': user, 'recept_id': url});
+    if (relation == null) {
       return false;
     } else {
       return true;
