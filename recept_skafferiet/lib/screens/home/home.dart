@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:recept_skafferiet/screens/home/recipe_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
-import 'package:recept_skafferiet/DatabaseCommunication/databaseComm.dart';
 
 class Home extends StatelessWidget {
-  final dbComm = new DatabaseComm();
-  var session;
-  Home(this.session);
   @override
   Widget build(BuildContext context) {
     final title = 'Alla recept';

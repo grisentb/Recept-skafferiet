@@ -17,30 +17,27 @@ class _LoginPageState extends State<LoginPage> {
 
   _LoginPageState(DatabaseComm dbc) {
     this.dbComm = dbc;
-    this.dbComm.connectToCollections();
+    //this.dbComm.connectToCollections();
   }
 
   submitLoginDetails() async {
     //var session = await dbComm.login(usernameController.text, passwordController.text);
-    var session = null;
-    if (session == null){
+    var session = {'username': "tom", 'sessionToken': "klmaskmladfs"};
+    if (session != null) {
       //Navigera till Nav() med session som context
       Navigator.pushNamed(context, Nav.route, arguments: NavArguments(session));
       return MaterialApp(
         // ignore: missing_return
         onGenerateRoute: (settings) {
-          if (settings.name == Nav.route){
+          if (settings.name == Nav.route) {
             final args = settings.arguments as NavArguments;
             return MaterialPageRoute(builder: (context) {
-              return Nav(
-                session: args.session
-              );
+              return Nav(session: args.session);
             });
           }
         },
       );
     }
-
   }
 
   @override
