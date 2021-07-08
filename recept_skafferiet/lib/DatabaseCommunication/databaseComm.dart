@@ -41,39 +41,45 @@ class DatabaseComm {
       var recipe =
           await this.recipeCollection.findOne({'_id': relation['recept_id']});
 
-      recipes.add(new Recipe(recipe['ingredients'], recipe['instructions'],
-          recipe['title'], recipe['time'], recipe['url']));
+      recipes.add(new Recipe(
+          recipe['ingredients'],
+          recipe['instructions'],
+          recipe['title'],
+          recipe['extra'],
+          recipe['url'],
+          recipe['portions'],
+          recipe['image']));
     }
     return recipes;
   }
 
   //Push recipe
   void pushRecipeClass(localUser, Recipe recipe) async {
-    //Check if the recipe already exists, if it does not, push to recipe collection
-    var recipeId = await getId(recipe.url);
-    if (recipeId == null) {
-      await this.recipeCollection.insert({
-        '_id': recipe.url,
-        'title': recipe.title,
-        'ingredients': recipe.ingredients,
-        'instructions': recipe.instructions,
-        'time': recipe.time,
-        'rating': recipe.rating
-      });
-    }
+    await this.recipeCollection.insert({
+      '_id': recipe.url,
+      'title': recipe.title,
+      'ingredients': recipe.ingredients,
+      'instructions': recipe.instructions,
+      'extra': recipe.extra,
+      'portions': recipe.portions,
+      'image': recipe.image
+    });
+  }
+
+  void pushRelation(localUser, url, rating, comment) async {
     //Push to relational collection
     await this.relationalCollection.insert({
       'user_id': localUser,
-      'recept_id': recipeId,
-      'my_rating': "",
-      'my_comments': ""
+      'recept_id': url,
+      'my_rating': rating,
+      'my_comments': comment
     });
   }
 
   // void pushRecipeClass(localUser, Recipe recipe) async {
   //   await pushRecipeArguments(
   //       localUser,
-  //       recipe.getIngridients(),
+  //       recipe.getIngredients(),
   //       recipe.getInstructions(),
   //       recipe.getTitle(),
   //       recipe.getUrl(),
@@ -154,11 +160,11 @@ class DatabaseComm {
   }
 
   dynamic getId(url) async {
-    var recipe = await this.recipeCollection.findOne({'url': url});
+    var recipe = await this.recipeCollection.findOne({'_id': url});
     if (recipe == null) {
-      return null;
+      return false;
     } else {
-      return recipe['id'];
+      return true;
     }
   }
 

@@ -23,25 +23,32 @@ Future<Recipe> getScrapeCoop(domain) async {
         '> li.u-colorBase',
         ['title']);
     // Scrapes tRegExp(r'\bhttps://coop.se\b').hasMatch(domain)he title of the recipe
-    List<Map<String, dynamic>> recipeName = webScraper.getElement(
+    List<Map<String, dynamic>> recipeTitle = webScraper.getElement(
         'div.Grid-cell'
         '> div.u-paddingVxlg.u-paddingTlg.u-sm-paddingTxlg.u-paddingHlg.u-lg-paddingHxlg.u-lg-paddingBz.u-bgWhite'
         '> h1.u-textFamilySecondary.u-marginBxsm',
         ['title']);
     // Scrapes the time it takes to complete the recipe
-    List<Map<String, dynamic>> time = webScraper.getElement(
+    List<Map<String, dynamic>> extraInfo = webScraper.getElement(
         'div.Grid-cell'
         '> div.u-paddingVxlg.u-paddingTlg.u-sm-paddingTxlg.u-paddingHlg.u-lg-paddingHxlg.u-lg-paddingBz.u-bgWhite'
         '> div.u-marginTlg'
         '> div.Grid.Grid--gutterHxlg.Grid--gutterVxsm.Grid--fit'
-        '> div.Grid-cell.Grid-cell--fit.u-borderRight2'
+        '> div.Grid-cell.Grid-cell--fit'
         '> span',
         ['title']);
 
+    List<Map<String, dynamic>> imgSrc = webScraper.getElement(
+        'div.Hero.Hero--recipePage.u-lg-marginBmd'
+        '> img',
+        ['src']);
+
     final List<String> ingredientList = [];
     final List<String> instructionList = [];
-    final recipeTitle = recipeName[0]['title'];
-    final recipeTime = time[0]['title'];
+    final title = recipeTitle[0]['title'];
+    final recipeExtra = extraInfo[0]['title'];
+    var portions = extraInfo[1]['title'];
+    var img = imgSrc[0]['attributes']['src'];
 
     // Use of regex to format the text
     ingredients.forEach((element) {
@@ -60,8 +67,12 @@ Future<Recipe> getScrapeCoop(domain) async {
       instructionList.add('$title');
     });
 
+    portions = portions.replaceAll(RegExp(r"\D"), "");
+
+    img = img.replaceAll("//", "");
+
     //Returns a recipe object with given elements
-    return new Recipe(
-        recipeTitle, ingredientList, instructionList, recipeTime, domain);
+    return new Recipe(title, ingredientList, instructionList, recipeExtra,
+        domain, portions, img);
   }
 }

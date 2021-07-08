@@ -15,19 +15,27 @@ Future<Recipe> getScrapeKoket(domain) async {
         '> span',
         ['title']);
     // Scrapes tRegExp(r'\bhttps://coop.se\b').hasMatch(domain)he title of the recipe
-    List<Map<String, dynamic>> recipeName = webScraper
+    List<Map<String, dynamic>> recipeTitle = webScraper
         .getElement('h1.recipe_title__3Uhx6.recipe_mobile__2VTII', ['title']);
     // Scrapes the time it takes to complete the recipe
-    List<Map<String, dynamic>> time = webScraper.getElement(
+    List<Map<String, dynamic>> recipeTime = webScraper.getElement(
         'div.details_wrapper__3Euwd'
         '> p:last-child',
         ['title']);
+    List<Map<String, dynamic>> recipePortions =
+        webScraper.getElement('span.portions_portions__3s3hs', ['title']);
+    List<Map<String, dynamic>> recipeImage =
+        webScraper.getElement('img.media_recipeImage__3l3Nm', ['src']);
 
     final List<String> ingredientList = [];
     final List<String> instructionList = [];
-    final recipeTitle = recipeName[0]['title'];
-    final recipeTime = time[0]['title'];
-
+    final title = recipeTitle[0]['title'];
+    final time = recipeTime[0]['title'];
+    final portions = recipePortions[0]['title'];
+    var img = null;
+    if (recipeImage.length != 0) {
+      img = recipeImage[0]['attributes']['src'];
+    }
     // Use of regex to format the text
     ingredients.forEach((element) {
       final title = element['title']
@@ -45,8 +53,10 @@ Future<Recipe> getScrapeKoket(domain) async {
       instructionList.add('$title');
     });
 
+    print(portions);
+    print(img);
     //Returns a recipe object with given elements
     return new Recipe(
-        recipeTitle, ingredientList, instructionList, recipeTime, domain);
+        title, ingredientList, instructionList, time, domain, portions, img);
   }
 }

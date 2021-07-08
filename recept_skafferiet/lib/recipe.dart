@@ -4,19 +4,22 @@ class Recipe {
   var title;
   var id;
   var url;
-  var rating;
-  var time;
+  var extra;
+  var portions;
+  var image;
 
-  Recipe(tit, ing, ins, tim, url) {
+  Recipe(tit, ing, ins, ext, url, por, img) {
     this.title = tit;
     this.ingredients = ing;
     this.instructions = ins;
-    this.time = time;
+    this.extra = ext;
     this.url = url;
+    this.portions = por;
+    this.image = img;
   }
 
   //getters and setters
-  getIngridients() {
+  getIngredients() {
     return this.ingredients;
   }
 
@@ -36,11 +39,15 @@ class Recipe {
     return this.url;
   }
 
-  getRating() {
-    return this.rating;
+  getExtra() {
+    return this.extra;
   }
 
-  getTime() {
-    return this.time;
+  getPortions() {
+    return this.portions;
+  }
+
+  getImage() {
+    return this.image;
   }
 }
