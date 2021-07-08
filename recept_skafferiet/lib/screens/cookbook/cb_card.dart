@@ -3,12 +3,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:recept_skafferiet/screens/image_banner.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 
-class RecipeCard extends StatelessWidget {
+class CBCard extends StatelessWidget {
   final String _imgPath;
   final String _name;
   final double _score;
 
-  RecipeCard(this._imgPath, this._name, this._score);
+  CBCard(this._imgPath, this._name, this._score);
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +40,13 @@ class RecipeCard extends StatelessWidget {
                 ]));
           },
           child: SizedBox(
-              width: 200,
-              height: 400,
-              child: Column(
+              width: 400,
+              height: 200,
+              child: Row(
                 children: [
-                  ImageBanner(_imgPath, 150.0), // TODO: Make more stylish
-                  Text(_name), // TODO: Make more stylish
-                  RatingBar.builder(
+                  ImageBanner(_imgPath, 10.0), // TODO: Make more stylish
+                  //Text(_name), Text(_name), // TODO: Make more stylish
+                  /* RatingBar.builder(
                     initialRating: _score,
                     minRating: 1,
                     direction: Axis.horizontal,
@@ -61,7 +61,7 @@ class RecipeCard extends StatelessWidget {
                     onRatingUpdate: (rating) {
                       print(rating);
                     },
-                  )
+                  ) */
                 ],
               )),
         ),

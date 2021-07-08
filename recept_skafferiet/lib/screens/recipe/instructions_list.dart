@@ -9,7 +9,7 @@ class InstructionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(), // MAKES NOT SCROLLABLE
           padding: const EdgeInsets.all(8),
           itemCount: _instructions.length,
           itemBuilder: (BuildContext context, int index) {

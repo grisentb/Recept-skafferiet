@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recept_skafferiet_app/main_navigation.dart';
-import 'package:recept_skafferiet_app/screens/home/home.dart';
+import 'package:recept_skafferiet/main_navigation.dart';
 
 void main() {
   runApp(Nav());

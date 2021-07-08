@@ -1,4 +1,4 @@
-name: recept_skafferiet_app
+name: recept_skafferiet
 description: A new Flutter application.
 version: 1.0.0+1
 
@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
+  flutter_rating_bar: ^4.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

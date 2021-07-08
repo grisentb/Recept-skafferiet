@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:recept_skafferiet/screens/home/recipe_card.dart';
+import 'package:recept_skafferiet/screens/cookbook/cb_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 
-class Home extends StatelessWidget {
+class CookBook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final title = 'Alla recept';
+    final title = 'Min kokbok';
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {
@@ -30,10 +30,10 @@ class Home extends StatelessWidget {
           title: Text(title),
         ),
         body: GridView.count(
-          crossAxisCount: 2,
+          crossAxisCount: 1,
           children: List.generate(10, (index) {
             return Center(
-                child: RecipeCard(
+                child: CBCard(
                     "https://assets.icanet.se/e_sharpen:80,q_auto,dpr_1.25,w_718,h_718,c_lfill/imagevaultfiles/id_229834/cf_259/pappardelle_med_portabello_och_sparris.jpg",
                     "smaskig pasta",
                     4.3));

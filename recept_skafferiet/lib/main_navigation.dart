@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recept_skafferiet_app/screens/home/home.dart';
-import 'package:recept_skafferiet_app/screens/recipe/recipe_screen.dart';
+import 'package:recept_skafferiet/screens/add_recipe/add_recipe.dart';
+import 'package:recept_skafferiet/screens/cookbook/cookbook.dart';
+import 'package:recept_skafferiet/screens/home/home.dart';
 
 /// This is the main application widget.
 class Nav extends StatelessWidget {
@@ -27,14 +28,8 @@ class _NavState extends State<NavStateful> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _mainScreens = <Widget>[
     Home(),
-    Text(
-      'Lägg till nytt recept',
-      style: optionStyle,
-    ),
-    Text(
-      'Min kokbok',
-      style: optionStyle,
-    ),
+    NewRecipe(),
+    CookBook(),
     Text(
       'Mitt konto',
       style: optionStyle,
@@ -54,7 +49,8 @@ class _NavState extends State<NavStateful> {
         child: _mainScreens.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        type: BottomNavigationBarType.fixed,
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu_outlined),
             label: 'Recept',
@@ -65,7 +61,7 @@ class _NavState extends State<NavStateful> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books_outlined),
-            label: 'Min kokbok',
+            label: 'Kokbok',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_box_outlined),

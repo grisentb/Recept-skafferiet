@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:recept_skafferiet_app/screens/image_banner.dart';
-import 'package:recept_skafferiet_app/screens/recipe/ingredients_list.dart';
-import 'package:recept_skafferiet_app/screens/recipe/instructions_list.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:recept_skafferiet/screens/image_banner.dart';
+import 'package:recept_skafferiet/screens/recipe/ingredients_list.dart';
+import 'package:recept_skafferiet/screens/recipe/instructions_list.dart';
 
 class RecipeScreen extends StatelessWidget {
   static const route = '/recipeScreen';
@@ -30,7 +31,22 @@ class RecipeScreen extends StatelessWidget {
         children: [
           ImageBanner(imgPath, 200.0),
           Text(name),
-          Text(score.toString() + " av 5"),
+          RatingBar.builder(
+            initialRating: score,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemSize: 20,
+            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (rating) {
+              print(rating);
+            },
+          ),
           IngredientsList(ingredients),
           InstructionsList(instructions),
         ],
