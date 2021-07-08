@@ -22,13 +22,19 @@ class _LoginPageState extends State<LoginPage> {
 
   submitLoginDetails() async {
     //var session = await dbComm.login(usernameController.text, passwordController.text);
-    var session = null;
-    if (session == null){
+    var session = {"username": "thomas", "password": "asouidh1o2834y9823yt"};
+    if (session != null){
       //Navigera till Nav() med session som context
       Navigator.pushNamed(context, Nav.route, arguments: NavArguments(session));
-      return MaterialApp(
-        // ignore: missing_return
-        onGenerateRoute: (settings) {
+    }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp( 
+      // ignore: missing_return
+      onGenerateRoute: (settings) {
           if (settings.name == Nav.route){
             final args = settings.arguments as NavArguments;
             return MaterialPageRoute(builder: (context) {
@@ -37,15 +43,8 @@ class _LoginPageState extends State<LoginPage> {
               );
             });
           }
-        },
-      );
-    }
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+      },
+      home: Scaffold(
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -74,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: submitLoginDetails,
         child: Text('Login'),
       ),
+    ),
     );
   }
 }
