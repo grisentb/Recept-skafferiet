@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:recept_skafferiet/main_navigation.dart';
 import "../DatabaseCommunication/databaseComm.dart";
 
 class LoginPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   DatabaseComm dbComm;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
   var debugText = 'Waiting for button press';
 
   _LoginPageState(DatabaseComm dbc) {
@@ -18,12 +20,27 @@ class _LoginPageState extends State<LoginPage> {
     this.dbComm.connectToCollections();
   }
 
-  void submitLoginDetails() async {
-    var res =
-        await dbComm.login(usernameController.text, passwordController.text);
-    setState(() {
-      this.debugText = res;
-    });
+  submitLoginDetails() async {
+    //var session = await dbComm.login(usernameController.text, passwordController.text);
+    var session = null;
+    if (session == null){
+      //Navigera till Nav() med session som context
+      Navigator.pushNamed(context, Nav.route, arguments: NavArguments(session));
+      return MaterialApp(
+        // ignore: missing_return
+        onGenerateRoute: (settings) {
+          if (settings.name == Nav.route){
+            final args = settings.arguments as NavArguments;
+            return MaterialPageRoute(builder: (context) {
+              return Nav(
+                session: args.session
+              );
+            });
+          }
+        },
+      );
+    }
+
   }
 
   @override

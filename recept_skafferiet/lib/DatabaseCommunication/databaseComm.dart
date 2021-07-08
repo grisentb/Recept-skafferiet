@@ -102,12 +102,12 @@ class DatabaseComm {
         var token = Uuid().v4();
         var session = {'username': username, 'sessionToken': token};
         await this.userSessions.save(session);
-        return token;
+        return session;
       } else {
         throw ArgumentError('Password is not correct');
       }
     } catch (e) {
-      //print('Failed login');
+      return null;
     }
   }
 
