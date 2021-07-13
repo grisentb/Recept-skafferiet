@@ -7,8 +7,7 @@ import 'package:recept_skafferiet/screens/home/home.dart';
 class Nav extends StatelessWidget {
   static const route = "/Nav";
   final session;
-  Nav({@required this.session});
-
+  Nav(this.session);
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +81,7 @@ class _NavState extends State<NavStateful> {
     );
   }
 }
+
 class NavArguments {
   final dynamic session;
 

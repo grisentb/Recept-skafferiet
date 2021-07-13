@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:recept_skafferiet/screens/Login.dart';
 import "../DatabaseCommunication/databaseComm.dart";
 
 class RegisterPage extends StatefulWidget {
@@ -11,50 +12,70 @@ class _RegisterPageState extends State<RegisterPage> {
   DatabaseComm dbComm;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  var debugText = 'Waiting for button press';
 
   _RegisterPageState(DatabaseComm dbc) {
     this.dbComm = dbc;
     this.dbComm.connectToCollections();
   }
 
-  void submitDetails() async {
-    dbComm.register(usernameController.text, passwordController.text);
-    setState(() {
-      this.debugText = "Registered!";
-    });
+  void submitRegisterDetails() async {
+    await dbComm.register(usernameController.text, passwordController.text);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => LoginPage()));
+  }
+
+  void navigateToLogin() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Register'),
-          TextField(
-            obscureText: false,
-            controller: this.usernameController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'username',
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Receptskafferiet')),
+        body: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Registrera'),
+            Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: TextField(
+                  obscureText: false,
+                  controller: this.usernameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Användarnamn',
+                  ),
+                )),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              child: TextField(
+                obscureText: false,
+                controller: passwordController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Lösenord',
+                ),
+              ),
             ),
-          ),
-          TextField(
-            obscureText: false,
-            controller: passwordController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'password',
-            ),
-          ),
-          Text(this.debugText),
-        ],
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: submitDetails,
-        child: Text('Register'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: submitRegisterDetails,
+                    child: Text('Registrera')),
+                Padding(
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.02)),
+                ElevatedButton(
+                    onPressed: navigateToLogin, child: Text('Tillbaka'))
+              ],
+            )
+          ],
+        )),
       ),
     );
   }

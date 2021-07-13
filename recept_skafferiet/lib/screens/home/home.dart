@@ -3,12 +3,13 @@ import 'package:recept_skafferiet/screens/home/recipe_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 
 class Home extends StatelessWidget {
+  Home(session);
+
   @override
   Widget build(BuildContext context) {
     final title = 'Alla recept';
     return MaterialApp(
       title: title,
-      // ignore: missing_return
       onGenerateRoute: (settings) {
         if (settings.name == RecipeScreen.route) {
           final args = settings.arguments as RecipeScreenArguments;
