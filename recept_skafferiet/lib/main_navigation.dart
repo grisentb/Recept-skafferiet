@@ -5,31 +5,37 @@ import 'package:recept_skafferiet/screens/home/home.dart';
 
 /// This is the main application widget.
 class Nav extends StatelessWidget {
+  static const route = "/Nav";
+  final session;
+  Nav(this.session);
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: NavStateful(),
+    return MaterialApp(
+      home: NavStateful(this.session),
     );
   }
 }
 
 /// This is the stateful widget that the main application instantiates.
 class NavStateful extends StatefulWidget {
-  const NavStateful({Key key}) : super(key: key);
-
+  final session;
+  NavStateful(this.session);
   @override
-  State<NavStateful> createState() => _NavState();
+  State<NavStateful> createState() => _NavState(this.session);
 }
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _NavState extends State<NavStateful> {
+  static var session;
+  _NavState(session);
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _mainScreens = <Widget>[
-    Home(),
-    NewRecipe(),
-    CookBook(),
+  static List<Widget> _mainScreens = [
+    Home(session),
+    NewRecipe(session),
+    CookBook(session),
     Text(
       'Mitt konto',
       style: optionStyle,
@@ -74,4 +80,10 @@ class _NavState extends State<NavStateful> {
       ),
     );
   }
+}
+
+class NavArguments {
+  final dynamic session;
+
+  NavArguments(this.session);
 }

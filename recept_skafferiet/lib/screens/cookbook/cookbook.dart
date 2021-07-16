@@ -3,6 +3,8 @@ import 'package:recept_skafferiet/screens/cookbook/cb_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 
 class CookBook extends StatelessWidget {
+  var session;
+  CookBook(this.session);
   @override
   Widget build(BuildContext context) {
     final title = 'Min kokbok';
