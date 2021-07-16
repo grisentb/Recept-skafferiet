@@ -8,13 +8,17 @@ class IngredientsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
+          shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(), // MAKES NOT SCROLLABLE
           padding: const EdgeInsets.all(8),
           itemCount: _ingredients.length,
+          separatorBuilder: (context, index) {
+            return Divider(color: Colors.grey);
+          },
           itemBuilder: (BuildContext context, int index) {
             return Container(
-              height: 50,
+              height: 30,
               child: Text(
                   (index + 1).toString() + "  " + '${_ingredients[index]}'),
             );
