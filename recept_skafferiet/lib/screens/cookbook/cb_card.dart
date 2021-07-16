@@ -41,27 +41,41 @@ class CBCard extends StatelessWidget {
           },
           child: SizedBox(
               width: 400,
-              height: 200,
+              height: 100,
               child: Row(
                 children: [
-                  ImageBanner(_imgPath, 10.0), // TODO: Make more stylish
-                  //Text(_name), Text(_name), // TODO: Make more stylish
-                  /* RatingBar.builder(
-                    initialRating: _score,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 20,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    onRatingUpdate: (rating) {
-                      print(rating);
-                    },
-                  ) */
+                  Column(children: [
+                    Container(
+                        constraints: BoxConstraints.expand(
+                            //needs both height and width otherwise results in error
+                            height: 100,
+                            width: 100),
+                        decoration: BoxDecoration(color: Colors.grey),
+                        child: Image.network(
+                          _imgPath,
+                          fit: BoxFit.cover,
+                        )),
+                  ] // TODO: Make more stylish
+                      ),
+                  Column(children: [
+                    Text(_name), // TODO: Make more stylish
+                    RatingBar.builder(
+                      initialRating: _score,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemSize: 20,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (rating) {
+                        print(rating);
+                      },
+                    )
+                  ])
                 ],
               )),
         ),
