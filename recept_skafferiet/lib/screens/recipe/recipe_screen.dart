@@ -11,43 +11,94 @@ class RecipeScreen extends StatelessWidget {
   final double score;
   final List<String> ingredients;
   final List<String> instructions;
+  final String extra;
+  final int portions;
 
-  const RecipeScreen({
-    Key key,
-    @required this.name,
-    @required this.imgPath,
-    @required this.score,
-    @required this.ingredients,
-    @required this.instructions,
-  }) : super(key: key);
+  const RecipeScreen(
+      {Key key,
+      @required this.name,
+      @required this.imgPath,
+      @required this.score,
+      @required this.ingredients,
+      @required this.instructions,
+      @required this.extra,
+      @required this.portions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        centerTitle: true,
+        title: Text(name),
       ),
-      body: Column(
+      body: ListView(
         children: [
           ImageBanner(imgPath, 200.0),
-          Text(name),
-          RatingBar.builder(
-            initialRating: score,
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: true,
-            itemCount: 5,
-            itemSize: 20,
-            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-            itemBuilder: (context, _) => Icon(
-              Icons.star,
-              color: Colors.amber,
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24),
+              )),
+          Align(
+            alignment: Alignment.center,
+            child: RatingBar.builder(
+              initialRating: score,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemSize: 20,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                print(rating);
+              },
             ),
-            onRatingUpdate: (rating) {
-              print(rating);
-            },
           ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+              child: IntrinsicHeight(
+                  child: Row(children: [
+                Expanded(
+                  child: Text(
+                    extra,
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+                VerticalDivider(
+                  color: Colors.grey,
+                  thickness: 2,
+                  width: 20,
+                ),
+                Expanded(
+                  child: Text(portions.toString() + " portioner"),
+                ),
+              ]))),
+          Divider(color: Colors.black, thickness: 2),
+          SizedBox(
+              width: double.infinity,
+              child: Container(
+                child: Text("Ingredients:",
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              )),
           IngredientsList(ingredients),
+          Divider(color: Colors.black, thickness: 2),
+          SizedBox(
+              width: double.infinity,
+              child: Container(
+                child: Text("Instructions:",
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              )),
           InstructionsList(instructions),
         ],
       ),
@@ -61,7 +112,9 @@ class RecipeScreenArguments {
   final double score;
   final List<String> ingredients;
   final List<String> instructions;
+  final String extra;
+  final int portions;
 
-  RecipeScreenArguments(
-      this.name, this.imgPath, this.score, this.ingredients, this.instructions);
+  RecipeScreenArguments(this.name, this.imgPath, this.score, this.ingredients,
+      this.instructions, this.extra, this.portions);
 }

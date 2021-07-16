@@ -16,14 +16,15 @@ class Home extends StatelessWidget {
 
           return MaterialPageRoute(builder: (context) {
             return RecipeScreen(
-              name: args.name,
-              imgPath: args.imgPath,
-              score: args.score,
-              ingredients: args
-                  .ingredients, //Later these should be loaded in when rendered
-              instructions: args
-                  .instructions, //Later these should be loaded in when rendered
-            );
+                name: args.name,
+                imgPath: args.imgPath,
+                score: args.score,
+                ingredients: args
+                    .ingredients, //Later these should be loaded in when rendered
+                instructions: args
+                    .instructions, //Later these should be loaded in when rendered
+                extra: args.extra,
+                portions: args.portions);
           });
         }
       },
