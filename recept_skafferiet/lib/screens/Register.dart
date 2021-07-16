@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'dart:io';
 import 'package:recept_skafferiet/screens/Login.dart';
 import "../DatabaseCommunication/databaseComm.dart";
 
@@ -15,11 +16,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _RegisterPageState(DatabaseComm dbc) {
     this.dbComm = dbc;
-    this.dbComm.connectToCollections();
   }
 
   void submitRegisterDetails() async {
-    await dbComm.register(usernameController.text, passwordController.text);
+    await this.dbComm.connectToCollections();
+    await this.dbComm.register(usernameController.text, passwordController.text);
+    await this.dbComm.closeDB();
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => LoginPage()));
   }

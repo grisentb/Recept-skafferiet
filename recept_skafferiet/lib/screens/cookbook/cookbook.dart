@@ -7,7 +7,7 @@ class CookBook extends StatelessWidget {
   CookBook(this.session);
   @override
   Widget build(BuildContext context) {
-    final title = 'Min kokbok';
+    final title = 'Min kokbok, session: ' + this.session['sessionToken'];
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {
@@ -26,6 +26,8 @@ class CookBook extends StatelessWidget {
                 extra: args.extra,
                 portions: args.portions);
           });
+        }else {
+          return null;
         }
       },
       home: Scaffold(

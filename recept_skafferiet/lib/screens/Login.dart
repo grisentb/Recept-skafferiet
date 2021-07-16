@@ -22,10 +22,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void submitLoginDetails() async {
-    var session = {
-      "username": "thomas",
-      "sessionToken": "asouidh1o2834y9823yt"
-    };
+    await this.dbComm.connectToCollections();
+    setState(() {
+      this.wrongDetails = 'Connected (I think)';
+    });
+    /*var session = await this.dbComm.login(this.usernameController, this.passwordController);
+    print(session);
     if (session != null) {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Nav(session)));
@@ -33,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         this.wrongDetails = "Felaktigt användarnamn eller lösenord";
       });
-    }
+    }*/
   }
 
   void navigateToRegister() async {
@@ -72,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            Text(this.wrongDetails),
+            Text(this.wrongDetails, style: TextStyle(color: Colors.red),),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
