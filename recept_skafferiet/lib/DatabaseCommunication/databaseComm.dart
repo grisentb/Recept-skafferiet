@@ -11,11 +11,7 @@ main() async {
   var dbComm = new DatabaseComm();
   await dbComm.connectToCollections();
   print('Connected');
-  await dbComm.register("Tom", "123");
-  await dbComm.getCategories("Tom", "asdasdasdasd");
-  await dbComm.newCategory("Tom", "asdasdasd", "Efterrätter");
-  await dbComm.getCategories("Tom", "asdasdasdasd");
-  await dbComm.closeDB();
+  print(await dbComm.login("Tom", "123"));
 }
 
 class DatabaseComm {
@@ -192,7 +188,7 @@ class DatabaseComm {
     }
   }
   //MÅSTE TESTS KÖRAS
-  getRecipieFromCategory(userId, sessionToken, category) async {
+  getRecipeFromCategory(userId, sessionToken, category) async {
     if( await checkSession(userId, sessionToken) || true){
       List<Recipe> categories = [];
       await for (var streamedRecipe in this.relationalCollection.find({'user_id': userId, 'categories': {'\$regex': '${category}'}})){

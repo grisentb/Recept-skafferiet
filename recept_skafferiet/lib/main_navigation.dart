@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recept_skafferiet/screens/add_recipe/add_recipe.dart';
 import 'package:recept_skafferiet/screens/cookbook/cookbook.dart';
 import 'package:recept_skafferiet/screens/home/home.dart';
+import 'package:recept_skafferiet/screens/account.dart';
 
 /// This is the main application widget.
 class Nav extends StatelessWidget {
@@ -42,8 +43,7 @@ class _NavState extends State<NavStateful> {
       new Home(session: this.session), 
       new NewRecipe(this.session), 
       new CookBook(this.session), 
-      Text('Mitt konto, session: ' + this.session['sessionToken'], style: optionStyle
-      ,),
+      new Account(this.session),
       ]);
   }
  

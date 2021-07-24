@@ -1,6 +1,8 @@
 import 'dart:core';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
+
 import 'recipe.dart';
 
 main(List<String> args) {
@@ -17,14 +19,16 @@ main(List<String> args) {
   var sorting = new SortingRecipes();
   sorting.sortRecipesByTitle(recipes, 0, recipes.length-1).forEach((element) {print(element.title);});
 }
+
 class SortingRecipes{
   List<Recipe> list;
-
+   
   List<Recipe> sortRecipesByTitle(List<Recipe> recipes, int lower, int upper){
     this.list = recipes;
     this._sortRecipesByTitle(lower, upper);
     return this.list;
   }
+
   _sortRecipesByTitle(int lower, int upper){
 
     if (upper - lower > 1 && upper > lower){
@@ -45,7 +49,7 @@ class SortingRecipes{
       return;
     }
   }
-
+  
   sortPivotByTitle(int pivotIndex, int lower, int upper){
     List<Recipe> tempList = new List<Recipe>.from(this.list);
     var i = lower;
@@ -69,5 +73,6 @@ class SortingRecipes{
     this.list = tempList;
     return pivotIndex;
   }
+
 
 }
