@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import 'package:recept_skafferiet/main_navigation.dart';
 import 'package:recept_skafferiet/screens/Register.dart';
 import "../DatabaseCommunication/databaseComm.dart";
+import "../DatabaseCommunication/apiComm.dart";
+import "package:shelf/shelf.dart";
 
 class LoginPage extends StatefulWidget {
   final dbComm = new DatabaseComm();
@@ -22,20 +24,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void submitLoginDetails() async {
-    await this.dbComm.connectToCollections();
-    setState(() {
-      this.wrongDetails = 'Connected (I think)';
-    });
-    /*var session = await this.dbComm.login(this.usernameController, this.passwordController);
-    print(session);
-    if (session != null) {
+    var session = await ApiCommunication.login(this.usernameController.text, this.passwordController.text);
+    if (session != "" || session != "Route not found") {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Nav(session)));
     } else {
       setState(() {
         this.wrongDetails = "Felaktigt användarnamn eller lösenord";
       });
-    }*/
+    }
   }
 
   void navigateToRegister() async {

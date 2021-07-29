@@ -39,8 +39,9 @@ class _NavState extends State<NavStateful> {
 
 
   _NavState({this.session}){
+    print("INSIDE NAV -> " + this.session.toString());
     _mainScreens = new List<Widget>.from([
-      new Home(session: this.session), 
+      new Home(this.session), 
       new NewRecipe(this.session), 
       new CookBook(this.session), 
       new Account(this.session),

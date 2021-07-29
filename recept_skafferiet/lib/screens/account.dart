@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
+import 'package:recept_skafferiet/screens/Login.dart';
+import 'dart:convert';
 
 class Account extends StatefulWidget{
   var session;
@@ -10,16 +13,19 @@ class Account extends StatefulWidget{
 
 class _AccountState extends State<Account>{
   var session;
-  logout(){
-    
+  void logout() async {
+    await ApiCommunication.logout(this.session['user_id'], this.session['sessionToken']);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
-  _AccountState(this.session);
+  _AccountState(sess){
+    this.session = json.decode(sess);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Text('Mitt konto, your session: ' + this.session),
+          Text('Mitt konto, your session: ' + this.session.toString()),
           TextButton(onPressed: logout, child: Text('Logga ut')),
           ]
         )

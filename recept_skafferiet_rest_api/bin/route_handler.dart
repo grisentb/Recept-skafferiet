@@ -35,13 +35,13 @@ Future<Response> loginHandler(Request request, username, password) async {
         var token = Uuid().v4();
         var session = {'user_id' : user['_id'], 'sessionToken': token};
         await userSessions.insertOne(session);
-        return Response.ok(json.encode(session));
+        return Response(200, body: json.encode(session), headers: {'Access-Control-Allow-Origin': '*'});
       }else {
         throw ArgumentError("Password is not correct");
       }
     }
   } catch (e) {
-    return Response.ok("");
+    return Response(200, body: null);
   }
 }
 
@@ -63,7 +63,7 @@ Future<Response> registerHandler(Request request, username, password) async {
 Future<Response> logoutHandler(Request request, id, sessionToken)async {
   await checkSession(id, sessionToken);
   await userSessions.remove({'user_id': ObjectId.parse(id), "sessionToken": sessionToken});
-  return Response.ok("Succesfully loggedout");
+  return Response.ok("Succesfully logged out");
 }
 
 //Category related querys
@@ -115,18 +115,164 @@ Future<Response> addRecipeToCategoryHandler(Request request, id, sessionToken, c
 Future<Response> getRecipeFromCategoryHandler(Request request, id, sessionToken, category) async {
   var session = await checkSession(id, sessionToken);
   if(session) {
-    List<dynamic> categories = [];
+    List<dynamic> recipes = [];
     await for (var streamedRecipe in relationalCollection.find({'user_id' : ObjectId.parse(id), 'categories':{'\$regex': '${category}'}})){
-      categories.add(streamedRecipe);
+      recipes.add(json.encode(streamedRecipe));
     }
 
-    return Response.ok('$categories');
+    return Response.ok(recipes);
   }else{
     return Response.ok("Session not valid");
   }
 }
 
+Future<Response> getRecipesHandler(Request request, userId, sessionToken) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session){
+    var recipes = [];
+    await for(var streamedRecipe in recipeCollection.find({'user_id' : userId})){
+      recipes.add(json.encode(streamedRecipe));
+    }
+    return Response.ok(recipes);
+  }else{
+    throw ArgumentError("Session is not valid");
+  }
+}
 
+Future<Response> pushRecipeHandler(Request request, userId, sessionToken) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session){
+    var codec = Utf8Codec();
+    String body = "";
+    await for (var streamedElement in request.read()){
+      body += codec.decode(streamedElement);
+    }
+    var recipe = json.decode(body);
+
+    if(! await recipeInDB(recipe['url']) ){
+      await recipeCollection.insertOne({
+        'title' : recipe['title'],
+        'instructions' : recipe['instructions'],
+        'ingridients' : recipe['ingridients'],
+        'url' : recipe['url'],
+        'extra' : recipe['extra'],
+        'portions' : recipe['portions'],
+        'image' : recipe['image'],
+      });
+      return Response(200, body: "Added recipe to Collection");
+    }else {
+      return Response(199, body: "Already in databse");
+    }
+  } else {
+    throw ArgumentError("Session is not valid");
+  }
+}
+
+Future<Response> pushRelationHandler(Request request, userId, sessionToken, recipeId) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session){
+    if(! await relationInDB(userId, recipeId)){
+      var codec = Utf8Codec();
+      String body = "";
+      await for(var streamedElement in request.read()){
+        body += codec.decode(streamedElement);
+      }
+      var relation = json.decode(body);
+      var rating = relation['rating'];
+      var comment = relation['comment'];
+      await relationalCollection.insert({
+        'user_id' : userId,
+        'recipe_id' : recipeId,
+        'rating' : rating,
+        'comment' : comment
+      });
+      return Response(200, body: "Relation is pushed to database");
+    }
+    else {
+      return Response(200,body: "Relation already in database");
+    }
+  } else {
+    throw ArgumentError("Session is not valid");
+  }
+}
+
+Future<Response> updateRatingHandler(Request request, userId, sessionToken, recipeId, rating) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session){
+    var codec = Utf8Codec();
+    String body = "";
+    await for(var streamedElement in request.read()){
+      body += codec.decode(streamedElement);
+    }
+    var rating = json.decode(body)['rating'];
+
+    var relation = await relationalCollection.findOne({
+      'user_id': userId,
+      'recipe_id': recipeId
+    });
+
+    relation!['rating'] = rating;
+
+    relationalCollection.update({
+      'user_id': userId,
+      'recipe_id' : recipeId
+    }, relation);
+    return Response(200, body: "Updated rating");
+  }else {
+    throw ArgumentError("Session is not valid");
+  }
+}
+
+Future<Response> updateCommentHandler(Request request, userId, sessionToken, recipeId) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session){
+    var codec = Utf8Codec();
+    String body = "";
+    await for(var streamedElement in request.read()){
+      body += codec.decode(streamedElement);
+    }
+    var comment = json.decode(body)['comment'];
+
+    var relation = await relationalCollection.findOne({
+      'user_id': userId,
+      'recipe_id': recipeId
+    });
+
+    relation!['comment'] = comment;
+
+    relationalCollection.update({
+      'user_id': userId,
+      'recipe_id' : recipeId
+    }, relation);
+    return Response(200, body: "Updated comment");
+  }else {
+    throw ArgumentError("Session is not valid");
+  }
+}
+
+
+//Helpers
+
+Future<bool> recipeInDB(recipeId) async {
+  var recipe = await recipeCollection.findOne({'url' : recipeId});
+  if (recipe == null){
+    return false;
+  } else {
+    return true;
+  }
+} 
+
+Future<bool> relationInDB(userId, recipeId) async {
+  var relation = await relationalCollection.findOne({
+    'user_id': userId,
+    'recipe_id' : recipeId 
+    });
+  if (relation == null){
+    return false;
+  }else {
+    return true;
+  }
+}
 
 
 

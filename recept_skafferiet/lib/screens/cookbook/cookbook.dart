@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:recept_skafferiet/screens/cookbook/cb_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
+import 'dart:convert';
 
 class CookBook extends StatelessWidget {
   var session;
-  CookBook(this.session);
+  CookBook(sess){
+    this.session = json.decode(sess);
+  }
   @override
   Widget build(BuildContext context) {
-    final title = 'Min kokbok, session: ' + this.session['sessionToken'];
+    final title = 'Min kokbok, session: ' + this.session['sessionToken'].toString();
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {

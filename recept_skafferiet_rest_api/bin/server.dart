@@ -49,4 +49,9 @@ final _router = shelf_router.Router()
   ..get('/getCategories/<id>/<sessionToken>', getCategoriesHandler)
   ..get('/newCategory/<id>/<sessionToken>/<category>', newCategoryHandler)
   ..get('/addRecipeToCategoryHandler/<id>/<sessionToken>/<category>/<recipe>', addRecipeToCategoryHandler)
-  ..get('/getRecipeFromCategory/<id>/<sessionToken>/<category>', getRecipeFromCategoryHandler);
+  ..get('/getRecipeFromCategory/<id>/<sessionToken>/<category>', getRecipeFromCategoryHandler)
+  ..get('/getRecipes/<userId>/<sessionToken>', getRecipesHandler)
+  ..post('/pushRecipe/<userId>/<sessionToken>', pushRecipeHandler)
+  ..post('/pushRelation/<userId>/<sessionToken>/<recipeId>', pushRelationHandler)
+  ..post('/updateRating/<userId>/<sessionToken>/<recipeId>', updateRatingHandler)
+  ..post('/updateComment/<userId>/<sessionToken>/<recipeId>', updateCommentHandler);
