@@ -24,7 +24,7 @@ class _CategoriesPageState extends State<Categories> {
 
   _getCategories() async {
     await this.dbComm.connectToCollections();
-    List cats = await this.dbComm.getCategories(session['username']);
+    List cats = await this.dbComm.getCategories_old(session['username']);
     setState(() {
       this.categories = cats;
       loaded = true;
