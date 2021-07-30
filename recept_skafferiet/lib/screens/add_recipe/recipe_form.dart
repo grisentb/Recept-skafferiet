@@ -28,7 +28,7 @@ class RecipeFormState extends State<RecipeForm> {
                 // The validator receives the text that the user has entered.
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
+                    return 'Var snäll och skriv in någon text';
                   }
                   return null;
                 },

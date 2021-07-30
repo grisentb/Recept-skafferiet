@@ -16,6 +16,7 @@ main() async {
   var dbComm = new DatabaseComm();
   await dbComm.connectToCollections();
   print('Connected');
+  print(await dbComm.login("Tom", "123"));
 }
 
 class DatabaseComm {
@@ -23,12 +24,13 @@ class DatabaseComm {
   final db = Db("mongodb://$host:$port/ReceptSkafferiet");
   final secretSalt = "VS/Sj3QMIHwUExeHXejcw717hrc49ckXlg+raLH2kA8=";
 
-  var recipeCollection;
-  var userCollection;
-  var relationalCollection;
-  var userSessions;
+  DbCollection recipeCollection;
+  DbCollection userCollection;
+  DbCollection relationalCollection;
+  DbCollection userSessions;
 
   connectToCollections() async {
+    print('Connecting');
     await db.open();
     this.recipeCollection = await db.collection('Recipes');
     this.userCollection = await db.collection('Users');
@@ -121,18 +123,19 @@ class DatabaseComm {
   logout(username, sessionToken) async {
     await this
         .userSessions
-        .deleteOne({'username': username, 'sessionToken': sessionToken});
+        .remove({'username': username, 'sessionToken': sessionToken});
   }
 
-  //Register and pushes to
-  void register(username, password) async {
+  //Register and pushes to database
+  register(username, password) async {
     if (this.userCollection != null) {
       var query = await this.userCollection.findOne({'username': username});
       if (query == null) {
         //Add to user collection
         await this.userCollection.insert({
           'username': username,
-          'password': hashPassword(password, this.secretSalt)
+          'password': hashPassword(password, this.secretSalt),
+          'categories': []
         });
         print("Succesfully added user: " + username);
       } else {
@@ -143,7 +146,7 @@ class DatabaseComm {
     }
   }
 
-  //Check session
+  //Check session to verify a legitimate user is requesting something from the database
   checkSession(username, sessionToken) async {
     var userSession = await this
         .userSessions
@@ -151,7 +154,70 @@ class DatabaseComm {
     if (userSessions != null) {
       return true;
     }
+    print("Check session failed authentication");
     return false;
+  }
+
+  getCategories(username, sessionToken) async {
+    if (await checkSession(username, sessionToken) || true) {
+      var user = await this.userCollection.findOne({"username": username});
+      return user['categories'];
+    }
+  }
+
+  newCategory(username, sessionToken, category) async {
+    if (await checkSession(username, sessionToken) || true) {
+      var user = await this.userCollection.findOne({"username": username});
+      List<dynamic> categories = user['categories'];
+      if (!categories.contains(category)) {
+        List<dynamic> newList = [];
+        newList.add(category);
+        newList.addAll(categories);
+        user['categories'] = newList;
+        print(user);
+        await this.userCollection.update({'username': username}, user);
+      } else {
+        print("Category already exists");
+      }
+    }
+  }
+
+  addRecipeToCategory(username, sessionToken, category, Recipe recipe) async {
+    if (checkSession(username, sessionToken) || true) {
+      var relation = await this
+          .relationalCollection
+          .findOne({'user_id': username, 'recept_id': recipe.id});
+      var categories = relation['categories'];
+      List<dynamic> newList = [];
+      newList.add(category);
+      newList.addAll(categories);
+      relation['categories'] = newList;
+      await this
+          .relationalCollection
+          .update({'user_id': username, 'recept_id': recipe.id}, relation);
+    }
+  }
+
+  //MÅSTE TESTS KÖRAS
+  getRecipeFromCategory(userId, sessionToken, category) async {
+    if (await checkSession(userId, sessionToken) || true) {
+      List<Recipe> categories = [];
+      await for (var streamedRecipe in this.relationalCollection.find({
+        'user_id': userId,
+        'categories': {'\$regex': '${category}'}
+      })) {
+        Recipe recipe = new Recipe(
+            streamedRecipe['title'],
+            streamedRecipe['ingridients'],
+            streamedRecipe['instructions'],
+            streamedRecipe['extra'],
+            streamedRecipe['url'],
+            streamedRecipe['portions'],
+            streamedRecipe['picture']);
+        categories.add(recipe);
+      }
+      print(categories.toString());
+    }
   }
 
 //Helpers
@@ -191,7 +257,7 @@ class DatabaseComm {
     print(base64.encode(bytes));
   }
 
-  dynamic getCategories(username) async {
+  dynamic getCategories_old(username) async {
     //await collection.find(where.eq('name', 'Tom').gt('rating', 10)).toList();
     var profile = await this.userCollection.findOne({'username': username});
     if (profile['categories'] == null) {

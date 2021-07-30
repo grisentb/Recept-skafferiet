@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:recept_skafferiet/screens/home/recipe_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
+import 'dart:convert';
 
 class Home extends StatelessWidget {
-  final session;
-  Home({this.session});
+  var session;
+  Home(sess){
+    this.session = json.decode(sess);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final title = 'Alla recept, session: ' + this.session['sessionToken'];
+    final title = 'Alla recept, session: ' + this.session['sessionToken'].toString();
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {
