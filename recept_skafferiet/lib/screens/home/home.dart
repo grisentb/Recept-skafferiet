@@ -5,13 +5,30 @@ import 'dart:convert';
 
 class Home extends StatelessWidget {
   var session;
-  Home(sess){
+  Home(sess) {
     this.session = json.decode(sess);
   }
 
   @override
   Widget build(BuildContext context) {
-    final title = 'Alla recept, session: ' + this.session['sessionToken'].toString();
+    return MaterialApp(home: HomeStateful(this.session));
+  }
+}
+
+class HomeStateful extends StatefulWidget {
+  final session;
+  HomeStateful(this.session);
+  @override
+  _HomeStatefulState createState() => _HomeStatefulState(this.session);
+}
+
+class _HomeStatefulState extends State<HomeStateful> {
+  var session;
+  _HomeStatefulState(this.session);
+
+  @override
+  Widget build(BuildContext context) {
+    final title = 'Alla recept, session: ' + this.session['sessionToken'];
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {

@@ -5,12 +5,29 @@ import 'dart:convert';
 
 class CookBook extends StatelessWidget {
   var session;
-  CookBook(sess){
+  CookBook(sess) {
     this.session = json.decode(sess);
   }
   @override
   Widget build(BuildContext context) {
-    final title = 'Min kokbok, session: ' + this.session['sessionToken'].toString();
+    return MaterialApp(home: CookBookStateful(this.session));
+  }
+}
+
+class CookBookStateful extends StatefulWidget {
+  final session;
+  CookBookStateful(this.session);
+  @override
+  _CookBookStatefulState createState() => _CookBookStatefulState(this.session);
+}
+
+class _CookBookStatefulState extends State<CookBookStateful> {
+  var session;
+  _CookBookStatefulState(this.session);
+
+  @override
+  Widget build(BuildContext context) {
+    final title = 'Min kokbok, session: ' + this.session['sessionToken'];
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {
@@ -29,7 +46,7 @@ class CookBook extends StatelessWidget {
                 extra: args.extra,
                 portions: args.portions);
           });
-        }else {
+        } else {
           return null;
         }
       },

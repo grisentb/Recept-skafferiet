@@ -6,6 +6,25 @@ class NewRecipe extends StatelessWidget {
   NewRecipe(this.session);
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(home: NewRecipeStateful(this.session));
+  }
+}
+
+class NewRecipeStateful extends StatefulWidget {
+  final session;
+  NewRecipeStateful(this.session);
+
+  @override
+  _NewRecipeStatefulState createState() =>
+      _NewRecipeStatefulState(this.session);
+}
+
+class _NewRecipeStatefulState extends State<NewRecipeStateful> {
+  var session;
+  _NewRecipeStatefulState(this.session);
+
+  @override
+  Widget build(BuildContext context) {
     final appTitle = 'Lägg till nytt recept';
 
     return MaterialApp(
