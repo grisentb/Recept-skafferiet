@@ -5,6 +5,7 @@ import 'package:recept_skafferiet/screens/recipe/ingredients_list.dart';
 import 'package:recept_skafferiet/screens/recipe/instructions_list.dart';
 
 class RecipeScreen extends StatelessWidget {
+  final session;
   static const route = '/recipeScreen';
   final String name;
   final String imgPath;
@@ -22,8 +23,63 @@ class RecipeScreen extends StatelessWidget {
       @required this.ingredients,
       @required this.instructions,
       @required this.extra,
-      @required this.portions})
+      @required this.portions,
+      @required this.session})
       : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: RecipeScreenStateful(this.session, name, imgPath, score,
+            ingredients, instructions, extra, portions));
+  }
+}
+
+class RecipeScreenStateful extends StatefulWidget {
+  final session;
+  static const route = '/recipeScreen';
+  final String name;
+  final String imgPath;
+  final double score;
+  final List<String> ingredients;
+  final List<String> instructions;
+  final String extra;
+  final int portions;
+  RecipeScreenStateful(this.session, this.name, this.imgPath, this.score,
+      this.ingredients, this.instructions, this.extra, this.portions);
+  @override
+  _RecipeScreenStatefulState createState() => _RecipeScreenStatefulState(
+      session,
+      name,
+      imgPath,
+      score,
+      ingredients,
+      instructions,
+      extra,
+      portions);
+}
+
+class _RecipeScreenStatefulState extends State<RecipeScreenStateful> {
+  var session;
+  String name;
+  String imgPath;
+  double score;
+  List<String> ingredients;
+  List<String> instructions;
+  String extra;
+  int portions;
+
+  _RecipeScreenStatefulState(session, name, imgPath, score, ingredients,
+      instructions, extra, portions) {
+    this.session = session;
+    this.name = name;
+    this.imgPath = imgPath;
+    this.score = score;
+    this.ingredients = ingredients;
+    this.instructions = instructions;
+    this.extra = extra;
+    this.portions = portions;
+  }
 
   @override
   Widget build(BuildContext context) {

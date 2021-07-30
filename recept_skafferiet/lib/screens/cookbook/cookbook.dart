@@ -7,6 +7,23 @@ class CookBook extends StatelessWidget {
   CookBook(this.session);
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(home: CookBookStateful(this.session));
+  }
+}
+
+class CookBookStateful extends StatefulWidget {
+  final session;
+  CookBookStateful(this.session);
+  @override
+  _CookBookStatefulState createState() => _CookBookStatefulState(this.session);
+}
+
+class _CookBookStatefulState extends State<CookBookStateful> {
+  var session;
+  _CookBookStatefulState(this.session);
+
+  @override
+  Widget build(BuildContext context) {
     final title = 'Min kokbok, session: ' + this.session['sessionToken'];
     return MaterialApp(
       title: title,
@@ -26,7 +43,7 @@ class CookBook extends StatelessWidget {
                 extra: args.extra,
                 portions: args.portions);
           });
-        }else {
+        } else {
           return null;
         }
       },

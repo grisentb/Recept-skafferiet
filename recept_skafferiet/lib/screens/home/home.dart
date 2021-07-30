@@ -8,6 +8,23 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(home: HomeStateful(this.session));
+  }
+}
+
+class HomeStateful extends StatefulWidget {
+  final session;
+  HomeStateful(this.session);
+  @override
+  _HomeStatefulState createState() => _HomeStatefulState(this.session);
+}
+
+class _HomeStatefulState extends State<HomeStateful> {
+  var session;
+  _HomeStatefulState(this.session);
+
+  @override
+  Widget build(BuildContext context) {
     final title = 'Alla recept, session: ' + this.session['sessionToken'];
     return MaterialApp(
       title: title,
