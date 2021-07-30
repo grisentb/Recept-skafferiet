@@ -3,11 +3,12 @@ import 'package:recept_skafferiet/screens/add_recipe/add_recipe.dart';
 import 'package:recept_skafferiet/screens/cookbook/cookbook.dart';
 import 'package:recept_skafferiet/screens/home/home.dart';
 
+import 'screens/categories/categories.dart';
+
 /// This is the main application widget.
 class Nav extends StatelessWidget {
   static const route = "/Nav";
   final session;
-
 
   Nav(this.session);
 
@@ -35,18 +36,19 @@ class _NavState extends State<NavStateful> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-
-
-  _NavState({this.session}){
+  _NavState({this.session}) {
     _mainScreens = new List<Widget>.from([
-      new Home(session: this.session), 
-      new NewRecipe(this.session), 
-      new CookBook(this.session), 
-      Text('Mitt konto, session: ' + this.session['sessionToken'], style: optionStyle
-      ,),
-      ]);
+      new Home(session: this.session),
+      new NewRecipe(this.session),
+      new CookBook(this.session),
+      new Categories(this.session),
+      Text(
+        'Mitt konto, session: ' + this.session['sessionToken'],
+        style: optionStyle,
+      ),
+    ]);
   }
- 
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -74,6 +76,8 @@ class _NavState extends State<NavStateful> {
             icon: Icon(Icons.library_books_outlined),
             label: 'Kokbok',
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.format_list_bulleted), label: 'Kategorier'),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_box_outlined),
             label: 'Konto',

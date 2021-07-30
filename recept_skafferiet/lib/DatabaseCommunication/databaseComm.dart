@@ -5,7 +5,12 @@ import 'package:crypto/crypto.dart';
 import "package:mongo_dart/mongo_dart.dart";
 import "package:recept_skafferiet/recipe.dart";
 import "package:uuid/uuid.dart";
+import 'dart:io' show Platform;
 
+String host = Platform.environment['MONGO_DART_DRIVER_HOST'] ??
+    '10.0.2.2'; //local connection only
+String port = Platform.environment['MONGO_DART_DRIVER_PORT'] ??
+    '27017'; //local connection only
 main() async {
   print("Starting");
   var dbComm = new DatabaseComm();
@@ -14,7 +19,8 @@ main() async {
 }
 
 class DatabaseComm {
-  final db = Db("mongodb://localhost:27017/ReceptSkafferiet");
+  final String uri = "mongodb://$host:$port/ReceptSkafferiet";
+  final db = Db("mongodb://$host:$port/ReceptSkafferiet");
   final secretSalt = "VS/Sj3QMIHwUExeHXejcw717hrc49ckXlg+raLH2kA8=";
 
   var recipeCollection;
@@ -27,7 +33,7 @@ class DatabaseComm {
     this.recipeCollection = await db.collection('Recipes');
     this.userCollection = await db.collection('Users');
     this.relationalCollection = await db.collection('Relational');
-    this.userSessions = await db.collection('userSessions');
+    this.userSessions = await db.collection('UserSessions');
     print("Connected to the Collections succesfully");
   }
 
@@ -183,6 +189,15 @@ class DatabaseComm {
     var rand = Random();
     var bytes = List<int>.generate(32, (_) => rand.nextInt(256));
     print(base64.encode(bytes));
+  }
+
+  dynamic getCategories(username) async {
+    //await collection.find(where.eq('name', 'Tom').gt('rating', 10)).toList();
+    var profile = await this.userCollection.findOne({'username': username});
+    if (profile['categories'] == null) {
+      return [];
+    }
+    return profile['categories'];
   }
 
   closeDB() {
