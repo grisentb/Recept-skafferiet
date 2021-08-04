@@ -208,7 +208,7 @@ class DatabaseComm {
       })) {
         Recipe recipe = new Recipe(
             streamedRecipe['title'],
-            streamedRecipe['ingridients'],
+            streamedRecipe['ingredients'],
             streamedRecipe['instructions'],
             streamedRecipe['extra'],
             streamedRecipe['url'],

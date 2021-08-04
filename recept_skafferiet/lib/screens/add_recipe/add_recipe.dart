@@ -30,10 +30,11 @@ class _NewRecipeStatefulState extends State<NewRecipeStateful> {
     return MaterialApp(
       title: appTitle,
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(appTitle),
         ),
-        body: RecipeForm(),
+        body: RecipeForm(this.session),
       ),
     );
   }

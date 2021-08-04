@@ -73,6 +73,6 @@ Future<Recipe> getScrapeIca(domain) async {
           title, ingredientList, instructionList, time, domain, portions, img);
     }
   } catch (e) {
-    throw ("Wrong format");
+    throw FormatException("Wrong format");
   }
 }

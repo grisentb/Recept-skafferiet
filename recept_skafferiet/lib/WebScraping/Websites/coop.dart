@@ -48,7 +48,7 @@ Future<Recipe> getScrapeCoop(domain) async {
       final List<String> instructionList = [];
       final title = recipeTitle[0]['title'];
       final recipeExtra = extraInfo[0]['title'];
-      var portions = extraInfo[1]['title'];
+      var portions = extraInfo.last['title'];
       var img = imgSrc[0]['attributes']['src'];
 
       // Use of regex to format the text
@@ -77,6 +77,6 @@ Future<Recipe> getScrapeCoop(domain) async {
           domain, portions, img);
     }
   } catch (e) {
-    throw ("Wrong format");
+    throw FormatException("Wrong format");
   }
 }

@@ -1,62 +1,55 @@
+import 'package:recept_skafferiet/recipe.dart';
+
 import 'Websites/coop.dart';
 import 'Websites/koket.dart';
 import 'Websites/ica.dart';
 import 'package:recept_skafferiet/DatabaseCommunication/databaseComm.dart';
+import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
 
-main(List<String> args) async {
-  var out = await addScrape(
-      "https://www.coop.se/recept/ost-och-skinkpaj-grundrecept/");
-  print(out);
+main(List<String> args) async {}
+
+scrapeRecipeObj(url) async {
+  var recipeObj;
+  if (RegExp(r'\bhttps://www.coop.se\b').hasMatch(url)) {
+    recipeObj = await getScrapeCoop(url);
+  } else if (RegExp(r'\bhttps://www.ica.se\b').hasMatch(url)) {
+    recipeObj = await getScrapeIca(url);
+  } else if (RegExp(r'\bhttps://www.koket.se\b').hasMatch(url)) {
+    recipeObj = await getScrapeKoket(url);
+  } else {
+    throw NotAllowedUrl();
+    return;
+  }
+  return recipeObj;
 }
 
-addScrape(domain) async {
-  // Funktion som kollar om receptet redan finns i databasen
-  // Om den inte finns så kalla på addNewScrape() och sedan på addRelation()
+addScrapeNew(uid, session, url) async {
   var outString = '';
   var isValidUrl = true;
-  final database = new DatabaseComm();
-  await database.connectToCollections();
-  var recipeExist = await database.recipeInDB(domain);
 
-  if (!recipeExist) {
-    var isValid = await addNewScrape(domain, database);
-    if (isValid == "domain") {
-      outString = "Recept går inte att hämta från den här hemsidan";
-      isValidUrl = false;
-    } else if (isValid == "format") {
-      outString = "Det går tyvärr inte att ladda ner det här receptet";
-      isValidUrl = false;
-    }
-  }
-
-  if (isValidUrl) {
-    var relationExist = await database.relationInDB("User", domain);
-    if (!relationExist) {
-      await database.pushRelation("User", domain, null, null);
-      outString = "Receptet är nu tillagt i din kokbok!";
+  try {
+    var recipe = await scrapeRecipeObj(url);
+    await ApiCommunication.pushRecipeClass(uid, session, recipe);
+    var res =
+        await ApiCommunication.pushRelation(uid, session, url, null, null);
+    if (res == "Relation already in database") {
+      throw AlreadyAdded();
     } else {
-      outString = "Du har redan lagt till det här receptet till din kokbok";
+      return "Receptet är nu tillagt i din kokbok!";
     }
+  } on FormatException catch (e) {
+    return "Det går tyvärr inte att ladda ner det här receptet";
+  } on NotAllowedUrl catch (e) {
+    return "Vi kan tyvärr inte ladda ner recept från den här hemsidan";
+  } on AlreadyAdded catch (e) {
+    return "Du har redan lagt till det här receptet i din kokbok";
   }
-
-  database.closeDB();
-  return outString;
 }
 
-addNewScrape(domain, database) async {
-  var recipeObj;
-  try {
-    if (RegExp(r'\bhttps://www.coop.se\b').hasMatch(domain)) {
-      recipeObj = await getScrapeCoop(domain);
-    } else if (RegExp(r'\bhttps://www.ica.se\b').hasMatch(domain)) {
-      recipeObj = await getScrapeIca(domain);
-    } else if (RegExp(r'\bhttps://www.koket.se\b').hasMatch(domain)) {
-      recipeObj = await getScrapeKoket(domain);
-    } else {
-      return "domain";
-    }
-    await database.pushRecipeClass("user", recipeObj);
-  } catch (e) {
-    return "format";
-  }
+class NotAllowedUrl implements Exception {
+  String errMsg() => 'This url cannot be scraped';
+}
+
+class AlreadyAdded implements Exception {
+  String errMsg() => 'This relation already exists in the database';
 }
