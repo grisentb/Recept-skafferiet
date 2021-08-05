@@ -7,15 +7,21 @@ import 'package:crypto/crypto.dart';
 import "package:recept_skafferiet/recipe.dart";
 
 main(List<String> args) async {
-  var recipe = new Recipe("Abborre", "ingridients", "instructions", "ext", "url", "por", "img");
+  var recipe = new Recipe("FläskKotlett", ["Fläskkotlett", "sallad"], ["Lägg upp kotletterna", "Ät maten"], "ext", "PorkURL", 2, "img");
   var loginResponse = json.decode(await ApiCommunication.login("Tom", "123"));
-
-  var res = await ApiCommunication.getCategories(loginResponse["user_id"], loginResponse["sessionToken"]);
-  print(res);
-
-  print(await ApiCommunication.pushRelation(loginResponse['user_id'], loginResponse['sessionToken'], recipe.url, null, ""));
-  //print(await ApiCommunication.pushRecipeClass(loginResponse['user_id'], loginResponse['sessionToken'], recipe));
-}
+  await ApiCommunication.pushRecipeClass(
+    loginResponse['user_id'], 
+    loginResponse['sessionToken'], 
+    recipe);
+  await ApiCommunication.pushRelation(
+    loginResponse['user_id'], 
+    loginResponse['sessionToken'], 
+    recipe.url, 
+    0, 
+    ""
+    );
+  await ApiCommunication.logout(loginResponse['user_id'], loginResponse['sessionToken']);
+  }
 
 
 class ApiCommunication {
@@ -25,7 +31,7 @@ class ApiCommunication {
   static login(username, password)async {
     var hashedPassword = hashPassword(password, secretSalt);
     var url = await Uri.parse(apiAddress + '/login/' + username + '/' + hashedPassword);
-    var res = await http.get(url, headers: {"Access-Control-Allow-Origin": "*"});
+    var res = await http.get(url);
     return res.body;
   }
 
@@ -62,11 +68,11 @@ class ApiCommunication {
     return res.body;
   }
 
-  static getRecipeFromCategory(id, sessionToken, category) async {
+  static getRecipesFromCategory(id, sessionToken, category) async {
     print(id);
     print(sessionToken);
     print(category);
-    var url = await Uri.parse(apiAddress + '/getRecipeFromCategory/' + id + '/' + sessionToken + '/' + category);
+    var url = await Uri.parse(apiAddress + '/getRecipesFromCategory/' + id + '/' + sessionToken + '/' + category);
     var res = await http.get(url);
     print(res.body);
   }
@@ -78,10 +84,16 @@ class ApiCommunication {
     return res.body;
   }
 
+  static getMyRecipes(userId, sessionToken) async {
+    var url = await Uri.parse(apiAddress + '/getMyRecipes/' + userId + '/' + sessionToken);
+    var res = await http.get(url);
+    return res.body;
+  }
+
   static pushRecipeClass(userId, sessionToken, Recipe recipe) async{
     var encodedRecipe = recipeToJsonString(recipe);
     var url = await Uri.parse(apiAddress + '/pushRecipe/' + userId + '/' + sessionToken);
-    var res = await http.post(url, body: encodedRecipe).whenComplete(() => print("completed"));
+    var res = await http.post(url, body: encodedRecipe);
     return res.body;
   }
 
@@ -94,20 +106,40 @@ class ApiCommunication {
     return res.body;
   }
 
+  static deleteRelation(userId, sessionToken, recipeId) async {
+    var url = await Uri.parse(apiAddress + 
+    '/deleteRelation/' + 
+    userId + '/' + 
+    sessionToken + '/' +
+    recipeId);
+    var res = await http.post(url);
+  }
+
   static updateRating(userId, sessionToken, recipeId, rating) async {
     var url = await Uri.parse(apiAddress + '/updateRating/' +
     userId + '/' + 
     sessionToken + '/' + 
-    recipeId + '/' + 
-    rating);
+    recipeId);
+    var res = await http.post(url, body: json.encode({'rating': rating}));
+    return res.body;
+
   }
   
   static updateComment(userId, sessionToken, recipeId, comment) async {
     var url = await Uri.parse(apiAddress + '/updateComment/' +
     userId + '/' + 
-    recipeId + '/' + 
-    comment);
+    sessionToken + '/' +
+    recipeId);
+    var res = await http.post(url, body: json.encode({'comment': comment}));
+    return res.body;
   }
+  
+  static deleteRecipe(userId, sessionToken, recipeId) async {
+    var url = await Uri.parse(apiAddress + '/deleteRecipe/' + userId + '/' + sessionToken + '/' + recipeId);
+    var res = await http.post(url);
+    return res.body;
+  }
+
   //Helpers
   static String hashPassword(String pwd, String salt) {
     var key = utf8.encode(pwd);

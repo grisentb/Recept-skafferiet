@@ -53,10 +53,10 @@ Future<Response> registerHandler(Request request, username, password) async {
       'password':password,
       'categories':[]
       });
-    return Response.ok("Successfully added user: " + username);
+    return Response(200, body: true.toString());
   }
   else{
-    return Response.ok("User already exists");
+    return Response(200, body: false.toString());
   }
 }
 
@@ -112,7 +112,7 @@ Future<Response> addRecipeToCategoryHandler(Request request, id, sessionToken, c
   }
 }
 
-Future<Response> getRecipeFromCategoryHandler(Request request, id, sessionToken, category) async {
+Future<Response> getRecipesFromCategoryHandler(Request request, id, sessionToken, category) async {
   var session = await checkSession(id, sessionToken);
   if(session) {
     List<dynamic> recipes = [];
@@ -130,12 +130,32 @@ Future<Response> getRecipesHandler(Request request, userId, sessionToken) async 
   var session = await checkSession(userId, sessionToken);
   if(session){
     var recipes = [];
-    await for(var streamedRecipe in recipeCollection.find({'user_id' : userId})){
+    await for(var streamedRecipe in recipeCollection.find()){
       recipes.add(json.encode(streamedRecipe));
     }
-    return Response.ok(recipes);
+    return Response.ok(recipes.toString());
   }else{
     throw ArgumentError("Session is not valid");
+  }
+}
+
+Future<Response> getMyRecipesHandler(Request request, userId, sessionToken) async {
+  var session = await checkSession(userId, sessionToken);
+  var recipes = [];
+  var relations = [];
+  if(session){
+    await for(var streamedRelations in relationalCollection.find({'user_id': userId})){
+      relations.add(json.encode(streamedRelations));
+    }
+    for(var relation in relations){
+      print(json.decode(relation)['recipe_id']);
+      var recipe = await recipeCollection.findOne({'url': json.decode(relation)['recipe_id']});
+      recipes.add(json.encode(recipe));
+    }
+    var res = json.encode({'recipes' : recipes, 'relations': relations});
+    return Response(200, body: res);
+  }else {
+    return Response(199, body: "Session is not valid");
   }
 }
 
@@ -196,7 +216,16 @@ Future<Response> pushRelationHandler(Request request, userId, sessionToken, reci
   }
 }
 
-Future<Response> updateRatingHandler(Request request, userId, sessionToken, recipeId, rating) async {
+Future<Response> deleteRelationHandler(Request request, userId, sessionToken, recipeId) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session){
+    var res = await relationalCollection.deleteOne({'user_id' : userId,'recipe_id':recipeId});
+    return Response(200);
+  }else {
+    throw ArgumentError("Session is not valid");
+  }
+}
+Future<Response> updateRatingHandler(Request request, userId, sessionToken, recipeId) async {
   var session = await checkSession(userId, sessionToken);
   if(session){
     var codec = Utf8Codec();
@@ -250,6 +279,15 @@ Future<Response> updateCommentHandler(Request request, userId, sessionToken, rec
   }
 }
 
+Future<Response> deleteRecipeHandler(Request request, userId, sessionToken, recipeId) async {
+  var session = await checkSession(userId, sessionToken);
+  if(session != null){
+    await relationalCollection.deleteOne({'user_id':userId, 'recipeID': recipeId});
+    return Response(200, body:"Recipe deleted from user");
+  }else {
+    throw ArgumentError("Session is not valid");
+  }
+}
 
 //Helpers
 
