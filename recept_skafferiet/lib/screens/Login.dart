@@ -1,26 +1,18 @@
 import "package:flutter/material.dart";
 import 'package:recept_skafferiet/main_navigation.dart';
 import 'package:recept_skafferiet/screens/Register.dart';
-import "../DatabaseCommunication/databaseComm.dart";
 import "../DatabaseCommunication/apiComm.dart";
-import "package:shelf/shelf.dart";
 
 class LoginPage extends StatefulWidget {
-  final dbComm = new DatabaseComm();
   @override
-  State<StatefulWidget> createState() => _LoginPageState(dbComm);
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  DatabaseComm dbComm;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
   var wrongDetails = '';
-
-  _LoginPageState(DatabaseComm dbc) {
-    this.dbComm = dbc;
-  }
 
   void submitLoginDetails() async {
     var session = await ApiCommunication.login(

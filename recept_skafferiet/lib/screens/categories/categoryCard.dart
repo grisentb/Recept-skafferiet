@@ -15,9 +15,12 @@ class CategoryCard extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(context, RecipeScreen.route,
               arguments: RecipeScreenArguments(
+                  "",
                   "Smaskig Pasta",
+                  "",
                   "https://assets.icanet.se/e_sharpen:80,q_auto,dpr_1.25,w_718,h_718,c_lfill/imagevaultfiles/id_229834/cf_259/pappardelle_med_portabello_och_sparris.jpg",
                   4.3,
+                  "",
                   ["pasta", "salt", "kärlek"],
                   [
                     "koka pasta",

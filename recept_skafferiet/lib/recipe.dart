@@ -1,6 +1,6 @@
 class Recipe {
-  var instructions;
-  var ingredients;
+  List<String> instructions;
+  List<String> ingredients;
   var title;
   var id;
   var url;

@@ -1,30 +1,29 @@
 import "package:flutter/material.dart";
+import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
 import 'package:recept_skafferiet/screens/Login.dart';
 import "../DatabaseCommunication/databaseComm.dart";
 
 class RegisterPage extends StatefulWidget {
-  final dbComm = new DatabaseComm();
   @override
-  State<StatefulWidget> createState() => _RegisterPageState(dbComm);
+  State<StatefulWidget> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  DatabaseComm dbComm;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  _RegisterPageState(DatabaseComm dbc) {
-    this.dbComm = dbc;
-  }
+  var userNotification = '';
 
   void submitRegisterDetails() async {
-    await this.dbComm.connectToCollections();
-    await this
-        .dbComm
-        .register(usernameController.text, passwordController.text);
-    await this.dbComm.closeDB();
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => LoginPage()));
+    var res = await ApiCommunication.register(this.usernameController.text, this.passwordController.text);
+    if(res == "true"){
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => LoginPage()));
+    }else {
+      setState(() {
+        this.userNotification = 'User already exists';
+      });
+    }
   }
 
   void navigateToLogin() {
@@ -56,13 +55,17 @@ class _RegisterPageState extends State<RegisterPage> {
               width: MediaQuery.of(context).size.width * 0.7,
               child: TextField(
                 obscureText: false,
-                controller: passwordController,
+                controller: this.passwordController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Lösenord',
                 ),
               ),
             ),
+            Container(
+              width: MediaQuery.of(context).size.width*0.7,
+              child: Text(this.userNotification, style: TextStyle(color: Colors.red),),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

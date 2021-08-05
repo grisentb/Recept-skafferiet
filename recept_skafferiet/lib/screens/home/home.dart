@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
 import 'package:recept_skafferiet/screens/home/recipe_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 import 'dart:convert';
+
+import '../../recipe.dart';
 
 class Home extends StatelessWidget {
   var session;
@@ -24,11 +27,45 @@ class HomeStateful extends StatefulWidget {
 
 class _HomeStatefulState extends State<HomeStateful> {
   var session;
-  _HomeStatefulState(this.session);
+  List<Widget> recipes = [];
+  _HomeStatefulState(sess){
+    this.session = sess;
+    update();
+  }
+
+
+  void update() async {
+    List<Widget> newRecipelist = [];
+    var res = await ApiCommunication.getRecipes(this.session['user_id'], this.session['sessionToken']);
+    res = json.decode(res);
+    for (var recipe in res){
+      List<String> ing = [...recipe['ingridients']];
+      List<String> ins = [...recipe['instructions']];
+      Recipe tempRecipe = new Recipe(
+        recipe['title'], 
+        ing, 
+        ins, 
+        recipe['extra'], 
+        recipe['url'], 
+        recipe['portions'], 
+        recipe['image']
+      );
+      newRecipelist.add(
+      Center(child: RecipeCard(
+          this.session,
+          tempRecipe
+          ),)
+      );
+    }
+    setState(() {
+      this.recipes = newRecipelist;
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    final title = 'Alla recept, session: ' + this.session['sessionToken'];
+    final title = 'Alla recept i Recept Skafferiet';
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {
@@ -38,6 +75,9 @@ class _HomeStatefulState extends State<HomeStateful> {
           return MaterialPageRoute(builder: (context) {
             return RecipeScreen(
                 name: args.name,
+                session: args.session,
+                comment: args.comment,
+                url: args.url,
                 imgPath: args.imgPath,
                 score: args.score,
                 ingredients: args
@@ -57,13 +97,8 @@ class _HomeStatefulState extends State<HomeStateful> {
         ),
         body: GridView.count(
           crossAxisCount: 2,
-          children: List.generate(10, (index) {
-            return Center(
-                child: RecipeCard(
-                    "https://assets.icanet.se/e_sharpen:80,q_auto,dpr_1.25,w_718,h_718,c_lfill/imagevaultfiles/id_229834/cf_259/pappardelle_med_portabello_och_sparris.jpg",
-                    "smaskig pasta",
-                    4.3));
-          }),
+          children: this.recipes
+          
         ),
       ),
     );

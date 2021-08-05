@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
 import 'package:recept_skafferiet/screens/cookbook/cb_card.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 import 'dart:convert';
+
+import '../../recipe.dart';
 
 class CookBook extends StatelessWidget {
   var session;
@@ -22,12 +25,53 @@ class CookBookStateful extends StatefulWidget {
 }
 
 class _CookBookStatefulState extends State<CookBookStateful> {
+  final controller = ScrollController();
   var session;
-  _CookBookStatefulState(this.session);
+  List<Widget> recipes = [];
+
+  _CookBookStatefulState(sess){
+    this.session = sess;
+    update();
+  }
+
+
+  void update() async {
+    List<Widget> newRecipelist = [];
+    var res = await ApiCommunication.getMyRecipes(this.session['user_id'], this.session['sessionToken']);
+    res = json.decode(res);
+
+    var i = 0;
+    while(i < res['recipes'].length) {
+      var recipe = json.decode(res['recipes'][i]);
+      var relation = json.decode(res['relations'][i]);
+      List<String> ing = [...recipe['ingridients']];
+      List<String> ins = [...recipe['instructions']];
+      Recipe tempRecipe = new Recipe(
+        recipe['title'], 
+        ing, 
+        ins, 
+        recipe['extra'], 
+        recipe['url'], 
+        recipe['portions'], 
+        recipe['image']
+      );
+      newRecipelist.add(
+      Center(child: CBCard(
+          this.session,
+          tempRecipe,
+          relation
+          ),)
+      );
+      i += 1;
+    }
+    setState(() {
+      this.recipes = newRecipelist;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final title = 'Min kokbok, session: ' + this.session['sessionToken'];
+    final title = 'Min kokbok';
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {
@@ -36,9 +80,12 @@ class _CookBookStatefulState extends State<CookBookStateful> {
 
           return MaterialPageRoute(builder: (context) {
             return RecipeScreen(
+                session: args.session,
                 name: args.name,
+                url: args.url,
                 imgPath: args.imgPath,
                 score: args.score,
+                comment: args.comment,
                 ingredients: args
                     .ingredients, //Later these should be loaded in when rendered
                 instructions: args
@@ -55,13 +102,13 @@ class _CookBookStatefulState extends State<CookBookStateful> {
           title: Text(title),
         ),
         body: ListView.builder(
-            itemCount: 10,
+          controller: controller,
+            shrinkWrap: true,
+            itemCount: this.recipes.length,
             itemBuilder: (context, index) {
               return Center(
-                  child: CBCard(
-                      "https://assets.icanet.se/e_sharpen:80,q_auto,dpr_1.25,w_718,h_718,c_lfill/imagevaultfiles/id_229834/cf_259/pappardelle_med_portabello_och_sparris.jpg",
-                      "smaskig pasta",
-                      4.3));
+                  child: this.recipes[index]
+                  );
             }),
       ),
     );
