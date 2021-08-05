@@ -64,7 +64,13 @@ class CBCard extends StatelessWidget {
                         color: Colors.amber,
                       ),
                     ),
-                    Text(this.relation['comment']),
+                    Text(((){
+                      if(this.relation['comment'] != null){
+                        return this.relation['comment'];
+                      }else {
+                        return "";
+                      }
+                    }())),
                   ])
                 ],
               )),

@@ -188,11 +188,10 @@ Future<Response> pushRecipeHandler(Request request, userId, sessionToken) async 
   }
 }
 
-Future<Response> pushRelationHandler(Request request, userId, sessionToken, recipeId) async {
+Future<Response> pushRelationHandler(Request request, userId, sessionToken) async {
   var session = await checkSession(userId, sessionToken);
   if(session){
-    if(! await relationInDB(userId, recipeId)){
-      var codec = Utf8Codec();
+    var codec = Utf8Codec();
       String body = "";
       await for(var streamedElement in request.read()){
         body += codec.decode(streamedElement);
@@ -200,6 +199,8 @@ Future<Response> pushRelationHandler(Request request, userId, sessionToken, reci
       var relation = json.decode(body);
       var rating = relation['rating'];
       var comment = relation['comment'];
+      var recipeId = relation['recipeId'];
+    if(! await relationInDB(userId, recipeId)){
       await relationalCollection.insert({
         'user_id' : userId,
         'recipe_id' : recipeId,
@@ -216,16 +217,22 @@ Future<Response> pushRelationHandler(Request request, userId, sessionToken, reci
   }
 }
 
-Future<Response> deleteRelationHandler(Request request, userId, sessionToken, recipeId) async {
+Future<Response> deleteRelationHandler(Request request, userId, sessionToken) async {
   var session = await checkSession(userId, sessionToken);
   if(session){
+    var codec = Utf8Codec();
+    String body = "";
+    await for(var streamedElement in request.read()){
+      body += codec.decode(streamedElement);
+    }
+    var recipeId = json.decode(body)['recipeId'];
     var res = await relationalCollection.deleteOne({'user_id' : userId,'recipe_id':recipeId});
     return Response(200);
   }else {
     throw ArgumentError("Session is not valid");
   }
 }
-Future<Response> updateRatingHandler(Request request, userId, sessionToken, recipeId) async {
+Future<Response> updateRatingHandler(Request request, userId, sessionToken) async {
   var session = await checkSession(userId, sessionToken);
   if(session){
     var codec = Utf8Codec();
@@ -234,7 +241,7 @@ Future<Response> updateRatingHandler(Request request, userId, sessionToken, reci
       body += codec.decode(streamedElement);
     }
     var rating = json.decode(body)['rating'];
-
+    var recipeId = json.decode(body)['recipeId'];
     var relation = await relationalCollection.findOne({
       'user_id': userId,
       'recipe_id': recipeId
@@ -252,7 +259,7 @@ Future<Response> updateRatingHandler(Request request, userId, sessionToken, reci
   }
 }
 
-Future<Response> updateCommentHandler(Request request, userId, sessionToken, recipeId) async {
+Future<Response> updateCommentHandler(Request request, userId, sessionToken) async {
   var session = await checkSession(userId, sessionToken);
   if(session){
     var codec = Utf8Codec();
@@ -261,7 +268,7 @@ Future<Response> updateCommentHandler(Request request, userId, sessionToken, rec
       body += codec.decode(streamedElement);
     }
     var comment = json.decode(body)['comment'];
-
+    var recipeId = json.decode(body)['recipeId'];
     var relation = await relationalCollection.findOne({
       'user_id': userId,
       'recipe_id': recipeId
@@ -279,9 +286,16 @@ Future<Response> updateCommentHandler(Request request, userId, sessionToken, rec
   }
 }
 
-Future<Response> deleteRecipeHandler(Request request, userId, sessionToken, recipeId) async {
+Future<Response> deleteRecipeHandler(Request request, userId, sessionToken) async {
   var session = await checkSession(userId, sessionToken);
-  if(session != null){
+  if(session){
+    var codec = Utf8Codec();
+    String body = "";
+    await for(var streamedElement in request.read()){
+      body += codec.decode(streamedElement);
+    }
+    var recipeId = json.decode(body)['recipeId'];
+
     await relationalCollection.deleteOne({'user_id':userId, 'recipeID': recipeId});
     return Response(200, body:"Recipe deleted from user");
   }else {

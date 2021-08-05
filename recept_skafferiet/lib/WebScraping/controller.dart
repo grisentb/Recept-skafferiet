@@ -9,13 +9,16 @@ import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
 main(List<String> args) async {}
 
 scrapeRecipeObj(url) async {
-  var recipeObj;
+  Recipe recipeObj;
   if (RegExp(r'\bhttps://www.coop.se\b').hasMatch(url)) {
     recipeObj = await getScrapeCoop(url);
+    recipeObj.portions = int.parse(recipeObj.portions);
   } else if (RegExp(r'\bhttps://www.ica.se\b').hasMatch(url)) {
     recipeObj = await getScrapeIca(url);
+    recipeObj.portions = int.parse(recipeObj.portions);
   } else if (RegExp(r'\bhttps://www.koket.se\b').hasMatch(url)) {
     recipeObj = await getScrapeKoket(url);
+    recipeObj.portions = int.parse(recipeObj.portions);
   } else {
     throw NotAllowedUrl();
     return;
@@ -31,7 +34,7 @@ addScrapeNew(uid, session, url) async {
     var recipe = await scrapeRecipeObj(url);
     await ApiCommunication.pushRecipeClass(uid, session, recipe);
     var res =
-        await ApiCommunication.pushRelation(uid, session, url, null, null);
+        await ApiCommunication.pushRelation(uid, session, url, 0, "");
     if (res == "Relation already in database") {
       throw AlreadyAdded();
     } else {

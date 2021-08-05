@@ -100,9 +100,9 @@ class ApiCommunication {
   static pushRelation(userId, sessionToken, recipeId, rating, comment) async {
     var url = await Uri.parse(apiAddress + '/pushRelation/' +
     userId + '/' + 
-    sessionToken + '/' + 
-    recipeId);
-    var res = await http.post(url, body: json.encode({"rating" : rating, "comment" : comment}));
+    sessionToken);
+    var res = await http.post(url, body: json.encode(
+            {"recipeId": recipeId, "rating": rating, "comment": comment}));
     return res.body;
   }
 
@@ -110,17 +110,15 @@ class ApiCommunication {
     var url = await Uri.parse(apiAddress + 
     '/deleteRelation/' + 
     userId + '/' + 
-    sessionToken + '/' +
-    recipeId);
-    var res = await http.post(url);
+    sessionToken);
+    var res = await http.post(url, body: json.encode({"recipeId": recipeId}));
   }
 
   static updateRating(userId, sessionToken, recipeId, rating) async {
     var url = await Uri.parse(apiAddress + '/updateRating/' +
     userId + '/' + 
-    sessionToken + '/' + 
-    recipeId);
-    var res = await http.post(url, body: json.encode({'rating': rating}));
+    sessionToken);
+    var res = await http.post(url, body: json.encode({"recipeId": recipeId, 'rating': rating}));
     return res.body;
 
   }
@@ -128,15 +126,14 @@ class ApiCommunication {
   static updateComment(userId, sessionToken, recipeId, comment) async {
     var url = await Uri.parse(apiAddress + '/updateComment/' +
     userId + '/' + 
-    sessionToken + '/' +
-    recipeId);
-    var res = await http.post(url, body: json.encode({'comment': comment}));
+    sessionToken);
+    var res = await http.post(url, body: json.encode({"recipeId": recipeId, 'comment': comment}));
     return res.body;
   }
   
   static deleteRecipe(userId, sessionToken, recipeId) async {
-    var url = await Uri.parse(apiAddress + '/deleteRecipe/' + userId + '/' + sessionToken + '/' + recipeId);
-    var res = await http.post(url);
+    var url = await Uri.parse(apiAddress + '/deleteRecipe/' + userId + '/' + sessionToken);
+    var res = await http.post(url, body: json.encode({"recipeId": recipeId}));
     return res.body;
   }
 

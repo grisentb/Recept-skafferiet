@@ -53,8 +53,8 @@ final _router = shelf_router.Router()
   ..get('/getRecipes/<userId>/<sessionToken>', getRecipesHandler)
   ..get('/getMyRecipes/<userId>/<sessionToken>', getMyRecipesHandler)
   ..post('/pushRecipe/<userId>/<sessionToken>', pushRecipeHandler)
-  ..post('/pushRelation/<userId>/<sessionToken>/<recipeId>', pushRelationHandler)
-  ..post('/deleteRelation/<userId>/<sessionToken>/<recipeId>', deleteRelationHandler)
-  ..post('/updateRating/<userId>/<sessionToken>/<recipeId>', updateRatingHandler)
-  ..post('/updateComment/<userId>/<sessionToken>/<recipeId>', updateCommentHandler)
-  ..post('/deleteRecipe/<userId>/<sessionToken>/<recipeId>', deleteRecipeHandler);
+  ..post('/pushRelation/<userId>/<sessionToken>', pushRelationHandler)
+  ..post('/deleteRelation/<userId>/<sessionToken>', deleteRelationHandler)
+  ..post('/updateRating/<userId>/<sessionToken>', updateRatingHandler)
+  ..post('/updateComment/<userId>/<sessionToken>', updateCommentHandler)
+  ..post('/deleteRecipe/<userId>/<sessionToken>', deleteRecipeHandler);
