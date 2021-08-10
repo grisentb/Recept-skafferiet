@@ -10,7 +10,6 @@ import 'screens/categories/categories.dart';
 class Nav extends StatelessWidget {
   static const route = "/Nav";
   final session;
-
   Nav(this.session);
 
   @override

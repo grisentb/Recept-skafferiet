@@ -1,38 +1,48 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:recept_skafferiet/DatabaseCommunication/databaseComm.dart';
+import 'package:recept_skafferiet/DatabaseCommunication/apiComm.dart';
 import 'package:recept_skafferiet/screens/categories/categoryCard.dart';
 import 'package:recept_skafferiet/screens/recipe/recipe_screen.dart';
 
-// ignore: must_be_immutable
 class Categories extends StatefulWidget {
-  var session;
-  State<StatefulWidget> createState() => _CategoriesPageState(session);
+  final session;
   Categories(this.session);
+  State<StatefulWidget> createState() => _CategoriesPageState(session);
 }
 
 class _CategoriesPageState extends State<Categories> {
   var session;
   bool loaded = false;
-  _CategoriesPageState(this.session);
-  final dbComm = new DatabaseComm();
+  _CategoriesPageState(sess) {
+    this.session = json.decode(sess); // kill me (-: :-)
+  }
   List categories;
   @override
   void initState() {
+    print('init categories...');
     super.initState();
     _getCategories();
   }
 
   _getCategories() async {
-    await this.dbComm.connectToCollections();
-    List cats = await this.dbComm.getCategories_old(session['username']);
-    setState(() {
-      this.categories = cats;
-      loaded = true;
-    });
+    var res = await ApiCommunication.getCategories(
+        this.session['user_id'], this.session['sessionToken']);
+    res = json.decode(res);
+    if (res != null) {
+      setState(() {
+        this.categories = res;
+        loaded = true;
+      });
+    } else {
+      setState(() {
+        this.categories = [];
+        loaded = true;
+      });
+    }
   }
 
   Widget build(BuildContext context) {
-    final title = 'Kategorier, session: ' + this.session['sessionToken'];
+    final title = 'Kategorier';
     return MaterialApp(
       title: title,
       onGenerateRoute: (settings) {

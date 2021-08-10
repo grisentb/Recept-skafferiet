@@ -28,39 +28,28 @@ class HomeStateful extends StatefulWidget {
 class _HomeStatefulState extends State<HomeStateful> {
   var session;
   List<Widget> recipes = [];
-  _HomeStatefulState(sess){
+  _HomeStatefulState(sess) {
     this.session = sess;
     update();
   }
 
-
   void update() async {
     List<Widget> newRecipelist = [];
-    var res = await ApiCommunication.getRecipes(this.session['user_id'], this.session['sessionToken']);
+    var res = await ApiCommunication.getRecipes(
+        this.session['user_id'], this.session['sessionToken']);
     res = json.decode(res);
-    for (var recipe in res){
+    for (var recipe in res) {
       List<String> ing = [...recipe['ingridients']];
       List<String> ins = [...recipe['instructions']];
-      Recipe tempRecipe = new Recipe(
-        recipe['title'], 
-        ing, 
-        ins, 
-        recipe['extra'], 
-        recipe['url'], 
-        recipe['portions'], 
-        recipe['image']
-      );
-      newRecipelist.add(
-      Center(child: RecipeCard(
-          this.session,
-          tempRecipe
-          ),)
-      );
+      Recipe tempRecipe = new Recipe(recipe['title'], ing, ins, recipe['extra'],
+          recipe['url'], recipe['portions'], recipe['image']);
+      newRecipelist.add(Center(
+        child: RecipeCard(this.session, tempRecipe),
+      ));
     }
     setState(() {
       this.recipes = newRecipelist;
     });
-
   }
 
   @override
@@ -95,11 +84,7 @@ class _HomeStatefulState extends State<HomeStateful> {
         appBar: AppBar(
           title: Text(title),
         ),
-        body: GridView.count(
-          crossAxisCount: 2,
-          children: this.recipes
-          
-        ),
+        body: GridView.count(crossAxisCount: 2, children: this.recipes),
       ),
     );
   }
