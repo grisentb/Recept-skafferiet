@@ -20,7 +20,7 @@ main(List<String> args) async {
 
 class ApiCommunication {
   static const secretSalt = "VS/Sj3QMIHwUExeHXejcw717hrc49ckXlg+raLH2kA8=";
-  static const apiAddress = "http://192.168.10.242:8080";
+  static const apiAddress = "http://192.168.0.214:8080";
   //Authentication
   static login(username, password) async {
     var hashedPassword = hashPassword(password, secretSalt);
