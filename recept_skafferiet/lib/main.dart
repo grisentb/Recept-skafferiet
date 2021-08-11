@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recept_skafferiet/screens/Login.dart';
+import 'initialize.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: LoginPage(),
+      home: Init(),
     );
   }
 }

@@ -7,21 +7,22 @@ import 'package:crypto/crypto.dart';
 import "package:recept_skafferiet/recipe.dart";
 
 main(List<String> args) async {
-  var recipe = new Recipe("FläskKotlett", ["Fläskkotlett", "sallad"],
-      ["Lägg upp kotletterna", "Ät maten"], "ext", "PorkURL", 2, "img");
-  var loginResponse = json.decode(await ApiCommunication.login("Tom", "123"));
-  await ApiCommunication.pushRecipeClass(
-      loginResponse['user_id'], loginResponse['sessionToken'], recipe);
-  await ApiCommunication.pushRelation(loginResponse['user_id'],
-      loginResponse['sessionToken'], recipe.url, 0, "");
-  await ApiCommunication.logout(
-      loginResponse['user_id'], loginResponse['sessionToken']);
+  var result = await ApiCommunication.validSession(
+      '6103fe621728557b41d00a2d', 'ea007b13-9477-4cb8-86ee-c8dc86b61dae');
+  print(result);
 }
 
 class ApiCommunication {
   static const secretSalt = "VS/Sj3QMIHwUExeHXejcw717hrc49ckXlg+raLH2kA8=";
-  static const apiAddress = "http://192.168.0.214:8080";
+  static const apiAddress = "http://192.168.10.114:8080";
   //Authentication
+  static validSession(id, sessionToken) async {
+    var url = await Uri.parse(
+        apiAddress + '/validSession/' + id + '/' + sessionToken);
+    var res = await http.get(url);
+    return res.body;
+  }
+
   static login(username, password) async {
     var hashedPassword = hashPassword(password, secretSalt);
     var url = await Uri.parse(
