@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:recept_skafferiet/main_navigation.dart';
 import 'package:recept_skafferiet/screens/Register.dart';
 import "../DatabaseCommunication/apiComm.dart";
+import 'package:get_storage/get_storage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,6 +19,11 @@ class _LoginPageState extends State<LoginPage> {
     var session = await ApiCommunication.login(
         this.usernameController.text, this.passwordController.text);
     if (session != "" || session != "Route not found") {
+      // Store session information locally
+      await GetStorage.init();
+      final localStorage = GetStorage();
+      localStorage.write('session', session);
+
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Nav(session)));
     } else {

@@ -43,13 +43,16 @@ final _staticHandler =
 
 // Router instance to handler requests.
 final _router = shelf_router.Router()
+  ..get('/validSession/<id>/<sessionToken>', validSession)
   ..get('/login/<username>/<password>', loginHandler)
   ..get('/register/<username>/<password>', registerHandler)
   ..get('/logout/<id>/<sessionToken>', logoutHandler)
   ..get('/getCategories/<id>/<sessionToken>', getCategoriesHandler)
   ..get('/newCategory/<id>/<sessionToken>/<category>', newCategoryHandler)
-  ..get('/addRecipeToCategoryHandler/<id>/<sessionToken>/<category>/<recipe>', addRecipeToCategoryHandler)
-  ..get('/getRecipesFromCategory/<id>/<sessionToken>/<category>', getRecipesFromCategoryHandler)
+  ..get('/addRecipeToCategoryHandler/<id>/<sessionToken>/<category>/<recipe>',
+      addRecipeToCategoryHandler)
+  ..get('/getRecipesFromCategory/<id>/<sessionToken>/<category>',
+      getRecipesFromCategoryHandler)
   ..get('/getRecipes/<userId>/<sessionToken>', getRecipesHandler)
   ..get('/getMyRecipes/<userId>/<sessionToken>', getMyRecipesHandler)
   ..post('/pushRecipe/<userId>/<sessionToken>', pushRecipeHandler)

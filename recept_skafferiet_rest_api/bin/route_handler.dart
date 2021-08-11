@@ -25,6 +25,15 @@ Future<bool> checkSession(id, sessionToken) async {
   return false;
 }
 
+Future<Response> validSession(Request request, id, sessionToken) async {
+  final isValid = await checkSession(id, sessionToken);
+  if (isValid) {
+    return Response(200, body: true.toString());
+  } else {
+    return Response(200, body: false.toString());
+  }
+}
+
 //Register, login & logout
 Future<Response> loginHandler(Request request, username, password) async {
   try {
